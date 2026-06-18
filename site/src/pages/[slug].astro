@@ -1,0 +1,949 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getAllProyectoSlugs, getProyectoBySlug } from '../lib/sanity';
+import { urlFor } from '../lib/imageUrl';
+
+export async function getStaticPaths() {
+  let paths: { params: { slug: string } }[] = [];
+  try {
+    const slugs = await getAllProyectoSlugs();
+    if (slugs?.length) {
+      paths = slugs.map(({ slug }) => ({ params: { slug } }));
+    }
+  } catch {}
+  if (!paths.find(p => p.params.slug === 'habitar-sin-fronteras')) {
+    paths.push({ params: { slug: 'habitar-sin-fronteras' } });
+  }
+  return paths;
+}
+
+const { slug } = Astro.params;
+
+let data: any = null;
+try {
+  data = await getProyectoBySlug(slug);
+} catch {}
+
+const HABITAR: any = {
+  titulo: 'Habitar sin Fronteras',
+  tituloLinea1: 'Habitar',
+  tituloLinea2: 'sin fronteras',
+  tagline: 'La casa donde el adentro y el afuera dejaron de ser dos lugares.',
+  precio: 'USD 370.000',
+  ubicacion: 'Fincas de San Vicente',
+  heroSubtitulo: '300 m² · lote de 3.000 m² · 3 dormitorios · playroom|office',
+  heroImage: null,
+  conceptoTexto: 'Hay casas que se ocupan y casas que se habitan. Esta es de las segundas.\n\nAcá el living no termina en una pared — sigue en la galería, baja al jardín, se estira sobre los 3.000 m². El límite entre estar adentro y estar afuera, simplemente, no existe.',
+  casaEyebrow: 'La casa · 230 m² cubiertos',
+  casaTitulo: 'Materiales que se sienten antes de nombrarse.',
+  casaTexto1: 'Una construcción pensada para durar y para reponer. Losa radiante full en toda la planta: el piso tibio bajo los pies en invierno, sin un radiador a la vista. Pisos nobles, carpinterías que enmarcan el verde, y una circulación que siempre te devuelve a la luz.',
+  casaTexto2: 'Tres dormitorios en suite, ambientes generosos y una cocina que es el centro real de la casa — no un apéndice. Cada decisión constructiva está del lado de quien va a vivir acá, no del lado del catálogo.',
+  casaImagenes: [],
+  casaDetalles: [
+    { numero: '01', titulo: 'Losa radiante full', descripcion: 'Climatización por piso en toda la superficie cubierta. Calor parejo, silencioso e invisible — el confort que no se ve pero se nota apenas entrás.' },
+    { numero: '02', titulo: 'Luz de lado a lado', descripcion: 'Orientación y ventanales pensados para que el sol cruce la casa durante todo el día. Ningún ambiente queda relegado a la sombra.' },
+    { numero: '03', titulo: 'Tres suites', descripcion: 'Dormitorios en suite con privacidad real, pensados tanto para una familia como para quien necesita un espacio de trabajo que reponga.' },
+  ],
+  exteriorEyebrow: 'El exterior · 3.000 m²',
+  exteriorTexto1: 'Una <strong>galería de 60 m²</strong> que funciona doce meses al año: comedor de verano, refugio de invierno, oficina con vista. Es el lugar donde la casa respira hacia afuera.',
+  exteriorTexto2: 'Más allá, el parque se abre sobre 3.000 m² con <strong>pileta</strong> y la sombra de árboles ya crecidos. Espacio de sobra para que los chicos corran, para una mesa larga, o simplemente para no escuchar nada.',
+  exteriorStats: [
+    { numero: '3.000', etiqueta: 'm² de lote' },
+    { numero: '60', etiqueta: 'm² de galería' },
+    { numero: '∞', etiqueta: 'horas afuera' },
+  ],
+  exteriorImagenes: [],
+  galeria: [],
+  perfiles: [
+    { tag: 'El esteta familiar', titulo: 'Para los que crían con criterio.', descripcion: 'Parejas que consumen diseño, viajan y tienen mirada. Buscan un lugar donde los chicos crezcan al aire libre sin resignar un metro de estética. La casa que no pide disculpas.', cita: '«Quiero que mis hijos corran en el jardín mientras yo los miro desde un living que no pide disculpas.»' },
+    { tag: 'El creador flexible', titulo: 'Para los que trabajan desde donde quieren.', descripcion: 'Empresarios y creativos que trabajan desde cualquier lado y necesitan un espacio que los reponga y los haga rendir. La casa como herramienta para pensar mejor.', cita: '«Tomo mis mejores decisiones cuando estoy en calma. Necesito un espacio que me ponga en ese estado.»' },
+  ],
+  ficha: [
+    { clave: 'Superficie cubierta', valor: '230 m²' },
+    { clave: 'Lote', valor: '3.000 m²' },
+    { clave: 'Dormitorios', valor: '3 en suite' },
+    { clave: 'Galería', valor: '60 m²' },
+    { clave: 'Climatización', valor: 'Losa radiante' },
+    { clave: 'Pileta', valor: 'Sí' },
+    { clave: 'Ubicación', valor: 'San Vicente' },
+    { clave: 'Condición', valor: 'Excelente' },
+  ],
+  ubicacionTitulo: 'Fincas de San Vicente.',
+  ubicacionTexto: 'Un barrio consolidado del sur del Gran Buenos Aires, lejos del ruido y cerca de todo lo que importa. Naturaleza real, seguridad de urbanización y los servicios resueltos.',
+  ubicacionCercanos: [
+    { lugar: 'Centro de San Vicente', tiempo: '5 min' },
+    { lugar: 'Autopista Ezeiza–Cañuelas', tiempo: '10 min' },
+    { lugar: 'Colegios de la zona', tiempo: '10 min' },
+    { lugar: 'Aeropuerto de Ezeiza', tiempo: '35 min' },
+  ],
+  ubicacionImagen: null,
+  seoDescripcion: 'Propiedad de autor en Fincas de San Vicente. 300 m² cubiertos, lote de 3.000 m², 3 dormitorios en suite, losa radiante, pileta. Presentada por Casa Materia.',
+};
+
+const p = data || (slug === 'habitar-sin-fronteras' ? HABITAR : null);
+if (!p) return Astro.redirect('/');
+
+const precio = p.precio || '';
+const titulo = p.titulo || '';
+const tituloLinea1 = p.tituloLinea1 || titulo.split(' ').slice(0, -1).join(' ');
+const tituloLinea2 = p.tituloLinea2 || titulo.split(' ').slice(-1)[0];
+const cmFormId = import.meta.env.PUBLIC_CM_HUBSPOT_FORM_ID || '';
+
+function imgSrc(image: any, width = 1400) {
+  if (!image?.asset) return '';
+  return urlFor(image).width(width).auto('format').url();
+}
+
+const casaDetalles = p.casaDetalles?.length ? p.casaDetalles : [];
+const exteriorStats = p.exteriorStats?.length ? p.exteriorStats : [];
+const galeria = p.galeria?.length ? p.galeria : [];
+const perfiles = p.perfiles?.length ? p.perfiles : [];
+const ficha = p.ficha?.length ? p.ficha : [];
+const ubicacionCercanos = p.ubicacionCercanos?.length ? p.ubicacionCercanos : [];
+---
+
+<BaseLayout
+  title={`${titulo} · Casa Materia`}
+  description={p.seoDescripcion || `${titulo} — Presentada por Casa Materia, Real Estate Boutique.`}
+  ogImage={p.heroImage ? imgSrc(p.heroImage, 1200) : undefined}
+>
+<style is:global>
+  /* ═══════════ NAV ═══════════ */
+  .nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.1rem clamp(1.5rem, 5vw, 4rem);
+    transition: background 400ms var(--ease), backdrop-filter 400ms var(--ease), border-color 400ms var(--ease), padding 400ms var(--ease);
+    border-bottom: 1px solid transparent;
+  }
+  .nav.scrolled {
+    background: rgba(42,40,37,0.86);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid rgba(200,187,168,0.12);
+    padding-top: 0.85rem; padding-bottom: 0.85rem;
+  }
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif; font-weight: 300;
+    font-size: 22px; letter-spacing: 0.01em; color: var(--crema); line-height: 1;
+  }
+  .nav-logo em { font-style: italic; color: var(--piedra); }
+  .nav-right { display: flex; align-items: center; gap: clamp(1rem, 3vw, 2.4rem); }
+  .nav-links { display: flex; gap: clamp(1rem, 2.5vw, 2.1rem); }
+  .nav-links a {
+    font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: rgba(245,240,232,0.62); text-decoration: none;
+    transition: color 240ms var(--ease);
+  }
+  .nav-links a:hover { color: var(--crema); }
+  .nav-cta {
+    font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--crema); text-decoration: none;
+    border: 1px solid rgba(200,187,168,0.35); padding: 0.6rem 1.1rem;
+    transition: background 240ms var(--ease), border-color 240ms var(--ease), color 240ms var(--ease);
+    white-space: nowrap;
+  }
+  .nav-cta:hover { background: var(--accent); border-color: var(--accent); color: var(--blanco); }
+  @media (max-width: 760px) { .nav-links { display: none; } }
+
+  /* ═══════════ HERO ═══════════ */
+  .hero {
+    background: var(--carbon);
+    color: var(--crema);
+    min-height: 100svh;
+    position: relative; overflow: hidden;
+    display: grid;
+    grid-template-columns: 1.05fr 0.95fr;
+  }
+  .hero::after {
+    content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 2;
+    background:
+      radial-gradient(ellipse at 78% 18%, rgba(139,115,85,0.18) 0%, transparent 55%),
+      radial-gradient(ellipse at 8% 92%, rgba(107,136,64,0.10) 0%, transparent 48%);
+  }
+  .hero-photo { position: relative; min-height: 100svh; }
+  .hero-photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .hero-ph {
+    position: absolute; inset: 0;
+    background: linear-gradient(160deg, var(--carbon) 0%, #3a3630 50%, var(--carbon-2) 100%);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .hero-ph span {
+    font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: rgba(200,187,168,0.2); text-align: center; padding: 1rem;
+  }
+  .hero-copy {
+    position: relative; z-index: 3;
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding: clamp(5rem,12vh,8rem) clamp(2rem,4vw,3.5rem) clamp(5rem,10vh,7rem) clamp(1.5rem,5vw,4rem);
+  }
+  .hero-eyebrow { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.6rem; }
+  .eyebrow {
+    font-family: 'Jost', sans-serif; font-weight: 400;
+    font-size: 11px; letter-spacing: 0.24em; text-transform: uppercase;
+    color: var(--accent);
+  }
+  .hero-eyebrow .eyebrow { color: var(--piedra); }
+  .hero h1 {
+    font-family: 'Cormorant Garamond', serif; font-weight: 300;
+    font-size: clamp(52px, 9vw, 112px); line-height: 0.96; letter-spacing: -0.02em;
+    color: var(--crema); margin-bottom: 0.5em;
+  }
+  .hero h1 em {
+    font-style: italic;
+    background: linear-gradient(96deg, var(--piedra) 0%, var(--piedra) 32%, #d5848e 88%);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent; color: transparent;
+    display: block;
+  }
+  .hero-sub {
+    font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 300;
+    font-size: clamp(18px, 2.4vw, 26px); color: rgba(200,187,168,0.72);
+    max-width: 30ch; line-height: 1.4;
+  }
+  @media (max-width: 820px) {
+    .hero { grid-template-columns: 1fr; grid-template-rows: 1fr auto; }
+    .hero-photo { min-height: 42svh; order: 2; }
+    .hero-copy { order: 1; padding-top: 7rem; }
+  }
+
+  /* ═══════════ REUSABLE ═══════════ */
+  .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 clamp(1.5rem, 5vw, 4rem); }
+  .s { padding: clamp(5rem, 12vh, 9rem) 0; position: relative; }
+  .rule { width: 48px; height: 1px; background: var(--accent); opacity: 0.6; }
+  .sec-head { max-width: 720px; margin-bottom: clamp(2.5rem, 5vh, 4rem); }
+  .sec-head .eyebrow { display: block; margin-bottom: 1.4rem; }
+  .sec-title {
+    font-family: 'Cormorant Garamond', serif; font-weight: 300;
+    font-size: clamp(36px, 5.5vw, 68px); line-height: 1.0; letter-spacing: -0.01em;
+    color: var(--carbon);
+  }
+  .sec-title em { font-style: italic; color: var(--accent); }
+  .body { font-size: 15px; line-height: 1.9; color: var(--mid); max-width: 56ch; }
+  .body + .body { margin-top: 1.1rem; }
+  .body strong { color: var(--carbon); font-weight: 500; }
+
+  /* ═══════════ CONCEPTO ═══════════ */
+  .manifesto { background: var(--carbon); color: var(--crema); }
+  .manifesto .wrap { display: grid; grid-template-columns: 0.4fr 1fr; gap: clamp(2rem, 6vw, 5rem); align-items: start; }
+  .manifesto .eyebrow { color: var(--piedra); }
+  .manifesto-text {
+    font-family: 'Cormorant Garamond', serif; font-weight: 300;
+    font-size: clamp(24px, 3.2vw, 42px); line-height: 1.45; letter-spacing: -0.01em;
+    color: var(--crema); white-space: pre-line;
+  }
+  .manifesto-text em { font-style: italic; color: var(--piedra); }
+  .manifesto-sign {
+    margin-top: 2.6rem;
+    font-family: 'Cormorant Garamond', serif; font-style: italic;
+    font-size: 17px; color: rgba(200,187,168,0.5);
+  }
+  @media (max-width: 760px) { .manifesto .wrap { grid-template-columns: 1fr; gap: 1.6rem; } }
+
+  /* ═══════════ LA CASA ═══════════ */
+  .casa-top { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(2rem,5vw,4.5rem); align-items: end; }
+  .casa-feature { margin-top: clamp(2.5rem, 5vh, 4rem); display: grid; grid-template-columns: 1.4fr 1fr; gap: 1.2rem; }
+  .casa-feature .big { aspect-ratio: 4/3; overflow: hidden; }
+  .casa-feature .col { display: grid; grid-template-rows: 1fr 1fr; gap: 1.2rem; }
+  .casa-feature .col > div { overflow: hidden; }
+  .img-ph {
+    width: 100%; height: 100%; min-height: 200px;
+    background: var(--crema);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .img-ph span {
+    font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: rgba(42,40,37,0.25); text-align: center; padding: 1rem;
+  }
+  .img-ph-dark { background: var(--carbon); }
+  .img-ph-dark span { color: rgba(200,187,168,0.2); }
+  .casa-detail-list {
+    margin-top: clamp(2.5rem,5vh,4rem);
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 1px; background: rgba(42,40,37,0.12);
+    border: 1px solid rgba(42,40,37,0.12);
+  }
+  .casa-detail { background: var(--blanco); padding: clamp(1.6rem, 3vw, 2.4rem); }
+  .casa-detail .n { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 13px; color: var(--accent); }
+  .casa-detail h3 {
+    font-family: 'Cormorant Garamond', serif; font-weight: 400;
+    font-size: clamp(22px,2.4vw,28px); color: var(--carbon);
+    margin: 0.5rem 0 0.7rem; line-height: 1.1;
+  }
+  .casa-detail p { font-size: 13.5px; line-height: 1.8; color: var(--mid); }
+  @media (max-width: 820px) {
+    .casa-top, .casa-feature { grid-template-columns: 1fr; }
+    .casa-detail-list { grid-template-columns: 1fr; }
+    .casa-feature .big { aspect-ratio: 16/10; }
+  }
+
+  /* ═══════════ EL EXTERIOR ═══════════ */
+  .exterior { background: var(--carbon-2); color: var(--crema); overflow: hidden; }
+  .exterior .eyebrow { color: var(--verde); }
+  .exterior .sec-title { color: var(--crema); }
+  .exterior .sec-title em { color: var(--piedra); }
+  .ext-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(2rem,5vw,4rem); align-items: center; margin-top: clamp(2.5rem,5vh,3.5rem); }
+  .ext-photo-tall { aspect-ratio: 3/4; overflow: hidden; }
+  .ext-body .body { color: rgba(200,187,168,0.78); }
+  .ext-body .body strong { color: var(--crema); }
+  .ext-stats { display: flex; gap: clamp(1.5rem,4vw,3rem); margin-top: 2.2rem; flex-wrap: wrap; }
+  .ext-stat .num {
+    font-family: 'Cormorant Garamond', serif; font-weight: 300;
+    font-size: clamp(34px,4vw,52px); line-height: 1; color: var(--verde);
+  }
+  .ext-stat .lbl { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(200,187,168,0.55); margin-top: 0.5rem; }
+  .ext-strip { margin-top: clamp(2.5rem,5vh,4rem); display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+  .ext-strip > div { aspect-ratio: 16/10; overflow: hidden; }
+  @media (max-width: 820px) { .ext-grid, .ext-strip { grid-template-columns: 1fr; } .ext-photo-tall { aspect-ratio: 16/11; } }
+
+  /* ═══════════ GALERÍA ═══════════ */
+  .galeria { background: var(--crema); }
+  .gal-grid {
+    margin-top: clamp(2.5rem,5vh,3.5rem);
+    display: grid; grid-template-columns: repeat(6, 1fr);
+    grid-auto-rows: clamp(120px, 16vh, 200px); gap: 1.1rem;
+  }
+  .gal-grid > div { overflow: hidden; }
+  .g1 { grid-column: span 4; grid-row: span 2; }
+  .g2 { grid-column: span 2; }
+  .g3 { grid-column: span 2; }
+  .g4 { grid-column: span 2; grid-row: span 2; }
+  .g5 { grid-column: span 4; }
+  .g6 { grid-column: span 2; }
+  .g7 { grid-column: span 2; }
+  @media (max-width: 820px) {
+    .gal-grid { grid-template-columns: repeat(2, 1fr); grid-auto-rows: 30vw; }
+    .g1,.g2,.g3,.g4,.g5,.g6,.g7 { grid-column: span 1; grid-row: span 1; }
+    .g1 { grid-column: span 2; grid-row: span 2; }
+  }
+
+  /* ═══════════ PERFILES ═══════════ */
+  .perfiles { background: var(--carbon); color: var(--crema); }
+  .perfiles .eyebrow { color: var(--piedra); }
+  .perfiles .sec-title { color: var(--crema); }
+  .perfiles .sec-title em { color: var(--piedra); }
+  .perfil-grid {
+    margin-top: clamp(2.5rem,5vh,4rem);
+    display: grid; grid-template-columns: 1fr 1fr; gap: clamp(1.5rem,4vw,3rem);
+  }
+  .perfil {
+    border: 1px solid rgba(200,187,168,0.16);
+    padding: clamp(1.8rem,3vw,2.6rem);
+    display: flex; flex-direction: column; min-height: 100%;
+  }
+  .perfil .tag { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--tierra); margin-bottom: 1rem; }
+  .perfil h3 {
+    font-family: 'Cormorant Garamond', serif; font-weight: 300;
+    font-size: clamp(28px,3.2vw,40px); color: var(--crema);
+    line-height: 1.05; margin-bottom: 1.1rem;
+  }
+  .perfil p { font-size: 13.5px; line-height: 1.85; color: rgba(200,187,168,0.7); margin-bottom: 1.6rem; }
+  .perfil blockquote {
+    font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 300;
+    font-size: clamp(19px,2.2vw,24px); line-height: 1.45; color: var(--piedra);
+    border-top: 1px solid rgba(200,187,168,0.16); padding-top: 1.4rem; margin-top: auto;
+  }
+  @media (max-width: 760px) { .perfil-grid { grid-template-columns: 1fr; } }
+
+  /* ═══════════ FICHA TÉCNICA ═══════════ */
+  .ficha .wrap { display: grid; grid-template-columns: 0.85fr 1.15fr; gap: clamp(2rem,6vw,5rem); align-items: start; }
+  .ficha-spec { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border-top: 1px solid rgba(42,40,37,0.12); }
+  .ficha-row { display: flex; justify-content: space-between; align-items: baseline; padding: 1.15rem 0; border-bottom: 1px solid rgba(42,40,37,0.12); }
+  .ficha-row:nth-child(odd) { padding-right: clamp(1rem,3vw,2.5rem); border-right: 1px solid rgba(42,40,37,0.12); }
+  .ficha-row:nth-child(even) { padding-left: clamp(1rem,3vw,2.5rem); }
+  .ficha-row .k { font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--mid); }
+  .ficha-row .v { font-family: 'Cormorant Garamond', serif; font-size: clamp(20px,2.2vw,26px); color: var(--carbon); }
+  .ficha-row .v em { font-style: italic; color: var(--accent); }
+  .price-card {
+    border: 1px solid rgba(42,40,37,0.12); background: var(--blanco);
+    padding: clamp(1.8rem,3vw,2.5rem); margin-top: 2rem;
+  }
+  .price-card .eyebrow { display: block; margin-bottom: 1rem; }
+  .price-card .amount {
+    font-family: 'Cormorant Garamond', serif; font-weight: 300;
+    font-size: clamp(40px,5vw,64px); line-height: 1; color: var(--carbon);
+  }
+  .price-card .note { font-size: 12.5px; color: var(--mid); margin-top: 1rem; line-height: 1.7; }
+  @media (max-width: 820px) {
+    .ficha .wrap { grid-template-columns: 1fr; }
+    .ficha-spec { grid-template-columns: 1fr; }
+    .ficha-row:nth-child(odd) { border-right: none; padding-right: 0; }
+    .ficha-row:nth-child(even) { padding-left: 0; }
+  }
+
+  /* ═══════════ UBICACIÓN ═══════════ */
+  .ubicacion { background: var(--crema); }
+  .ubic-grid { display: grid; grid-template-columns: 1fr 1.1fr; gap: clamp(2rem,5vw,4rem); align-items: center; }
+  .ubic-map { position: relative; aspect-ratio: 4/3; overflow: hidden; }
+  .ubic-pin {
+    position: absolute; left: 50%; top: 46%; transform: translate(-50%,-50%);
+    z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 0.5rem; pointer-events: none;
+  }
+  .ubic-pin .dot { width: 14px; height: 14px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 6px rgba(139,115,85,0.22); }
+  .ubic-pin .lbl { font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; background: var(--carbon); color: var(--crema); padding: 4px 10px; }
+  .ubic-near { margin-top: 2rem; display: flex; flex-direction: column; gap: 0; }
+  .ubic-near .row { display: flex; justify-content: space-between; padding: 0.85rem 0; border-bottom: 1px solid rgba(42,40,37,0.12); }
+  .ubic-near .row span:first-child { color: var(--carbon); font-size: 14px; }
+  .ubic-near .row span:last-child { color: var(--accent); font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 16px; }
+  @media (max-width: 820px) { .ubic-grid { grid-template-columns: 1fr; } }
+
+  /* ═══════════ VISITA PRIVADA ═══════════ */
+  .visita { background: var(--carbon); color: var(--crema); }
+  .visita .wrap { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(2.5rem,6vw,5rem); align-items: start; }
+  .visita .eyebrow { color: var(--piedra); }
+  .visita h2 {
+    font-family: 'Cormorant Garamond', serif; font-weight: 300;
+    font-size: clamp(34px,5vw,60px); line-height: 1.02; color: var(--crema); margin: 1.2rem 0;
+  }
+  .visita h2 em { font-style: italic; color: var(--piedra); }
+  .visita .blurb { font-size: 14px; line-height: 1.85; color: rgba(200,187,168,0.72); max-width: 40ch; }
+  .visita .price-spot { margin-top: 2rem; padding-top: 1.6rem; border-top: 1px solid rgba(200,187,168,0.16); }
+  .visita .price-spot .k { font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(200,187,168,0.45); }
+  .visita .price-spot .v { font-family: 'Cormorant Garamond', serif; font-size: clamp(30px,4vw,44px); color: var(--crema); margin-top: 0.4rem; }
+  .form { display: flex; flex-direction: column; gap: 1.1rem; }
+  .field { display: flex; flex-direction: column; gap: 0.5rem; }
+  .field label { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(200,187,168,0.55); }
+  .field input, .field select, .field textarea {
+    font-family: 'Jost', sans-serif; font-weight: 300; font-size: 15px; color: var(--crema);
+    background: rgba(245,240,232,0.04); border: 1px solid rgba(200,187,168,0.2);
+    padding: 0.85rem 1rem;
+    transition: border-color 240ms var(--ease), background 240ms var(--ease);
+  }
+  .field input::placeholder, .field textarea::placeholder { color: rgba(200,187,168,0.35); }
+  .field input:focus, .field select:focus, .field textarea:focus {
+    outline: none; border-color: var(--accent); background: rgba(245,240,232,0.07);
+  }
+  .field select { appearance: none; -webkit-appearance: none; cursor: pointer; color: var(--crema); }
+  .field select option { background: var(--carbon); color: var(--crema); }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.1rem; }
+  .submit {
+    font-family: 'Jost', sans-serif; font-weight: 400; font-size: 12px;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--blanco); background: var(--accent); border: none;
+    padding: 1.05rem 1.4rem; cursor: pointer;
+    transition: filter 240ms var(--ease), transform 240ms var(--ease);
+    margin-top: 0.4rem;
+    display: inline-flex; align-items: center; justify-content: center; gap: 0.6rem;
+    width: 100%;
+  }
+  .submit:hover:not(:disabled) { filter: brightness(1.08); transform: translateY(-2px); }
+  .submit:active { transform: translateY(0); }
+  .submit:disabled { opacity: 0.6; cursor: not-allowed; }
+  .form-success {
+    border: 1px solid rgba(200,187,168,0.2); padding: clamp(2rem,4vw,3rem);
+    text-align: center; display: none;
+  }
+  .form-success.show { display: block; animation: fadein 500ms var(--ease); }
+  .form-success .check {
+    font-family: 'Cormorant Garamond', serif; font-style: italic;
+    font-size: clamp(26px,3.5vw,38px); color: var(--piedra); line-height: 1.2;
+  }
+  .form-success p { font-size: 13.5px; color: rgba(200,187,168,0.65); margin-top: 1rem; line-height: 1.7; }
+  @keyframes fadein { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+  @media (max-width: 820px) { .visita .wrap { grid-template-columns: 1fr; } }
+  @media (max-width: 480px) { .field-row { grid-template-columns: 1fr; } }
+
+  /* ═══════════ FOOTER ═══════════ */
+  .foot { background: var(--carbon-2); color: rgba(200,187,168,0.6); padding: clamp(3rem,6vh,4.5rem) 0 2rem; }
+  .foot .wrap { display: flex; flex-direction: column; gap: 2.5rem; }
+  .foot-top { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 2rem; }
+  .foot-logo { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: 32px; color: var(--crema); line-height: 0.95; }
+  .foot-logo em { font-style: italic; color: var(--piedra); }
+  .foot-tagline { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(200,187,168,0.4); margin-top: 0.8rem; }
+  .foot-cols { display: flex; gap: clamp(2rem,6vw,5rem); flex-wrap: wrap; }
+  .foot-col .h { font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--tierra); margin-bottom: 0.9rem; }
+  .foot-col a, .foot-col p { display: block; font-size: 13px; color: rgba(200,187,168,0.65); text-decoration: none; line-height: 1.9; }
+  .foot-col a:hover { color: var(--crema); }
+  .foot-bottom {
+    display: flex; justify-content: space-between; align-items: center;
+    border-top: 1px solid rgba(200,187,168,0.1); padding-top: 1.6rem;
+    flex-wrap: wrap; gap: 0.5rem;
+  }
+  .foot-bottom span { font-size: 10.5px; letter-spacing: 0.06em; color: rgba(200,187,168,0.3); }
+  .foot-bottom a { color: rgba(200,187,168,0.55); text-decoration: none; border-bottom: 1px solid rgba(213,132,142,0.45); }
+  .foot-bottom a:hover { color: #d5848e; }
+
+  /* ═══════════ REVEAL ═══════════ */
+  [data-reveal] { opacity: 0; transform: translateY(26px); transition: opacity var(--reveal-dur) var(--ease), transform var(--reveal-dur) var(--ease); }
+  [data-reveal].in { opacity: 1; transform: none; }
+  [data-reveal][data-delay="1"] { transition-delay: 90ms; }
+  [data-reveal][data-delay="2"] { transition-delay: 180ms; }
+  @media (prefers-reduced-motion: reduce) {
+    [data-reveal] { opacity: 1; transform: none; transition: none; }
+    html { scroll-behavior: auto; }
+  }
+</style>
+
+<!-- NAV -->
+<nav class="nav" id="mainNav">
+  <a href="/" class="nav-logo">Casa <em>Materia</em></a>
+  <div class="nav-right">
+    <div class="nav-links">
+      <a href="#concepto">Concepto</a>
+      <a href="#casa">La casa</a>
+      <a href="#exterior">El exterior</a>
+      <a href="#galeria">Galería</a>
+    </div>
+    <a href="#visita" class="nav-cta">Visita privada</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero" id="top">
+  <div class="hero-copy">
+    <div class="hero-eyebrow">
+      <span class="eyebrow">{p.ubicacion || ''}</span>
+      {precio && <span style="font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(200,187,168,0.65)">· {precio}</span>}
+    </div>
+    <h1>
+      {tituloLinea1}<br>
+      <em>{tituloLinea2}</em>
+    </h1>
+    {p.tagline && <p class="hero-sub">{p.tagline}</p>}
+  </div>
+  <div class="hero-photo">
+    {p.heroImage ? (
+      <img src={imgSrc(p.heroImage, 1400)} alt={titulo} />
+    ) : (
+      <div class="hero-ph">
+        <span>Foto principal — fachada al atardecer / galería abierta</span>
+      </div>
+    )}
+  </div>
+</header>
+
+<!-- CONCEPTO -->
+<section class="s manifesto" id="concepto">
+  <div class="wrap">
+    <div data-reveal>
+      <span class="eyebrow">El concepto</span>
+      <div class="rule" style="margin-top:1.4rem;background:var(--piedra);opacity:0.4"></div>
+    </div>
+    <div>
+      <p class="manifesto-text" data-reveal data-delay="1">{p.conceptoTexto || ''}</p>
+      <p class="manifesto-sign" data-reveal data-delay="2">Casa Materia presenta — {titulo}.</p>
+    </div>
+  </div>
+</section>
+
+<!-- LA CASA -->
+<section class="s" id="casa">
+  <div class="wrap">
+    <div class="casa-top">
+      <div class="sec-head" style="margin-bottom:0" data-reveal>
+        {p.casaEyebrow && <span class="eyebrow">{p.casaEyebrow}</span>}
+        <h2 class="sec-title">{p.casaTitulo || ''}</h2>
+      </div>
+      <div data-reveal data-delay="1">
+        {p.casaTexto1 && <p class="body">{p.casaTexto1}</p>}
+        {p.casaTexto2 && <p class="body">{p.casaTexto2}</p>}
+      </div>
+    </div>
+
+    <div class="casa-feature">
+      <div class="big" data-reveal>
+        {p.casaImagenes?.[0] ? (
+          <img src={imgSrc(p.casaImagenes[0], 900)} alt="Imagen principal interior" />
+        ) : (
+          <div class="img-ph" style="min-height:320px">
+            <span>Living — doble altura / ventanal al jardín</span>
+          </div>
+        )}
+      </div>
+      <div class="col">
+        <div data-reveal data-delay="1">
+          {p.casaImagenes?.[1] ? (
+            <img src={imgSrc(p.casaImagenes[1], 600)} alt="Cocina" />
+          ) : (
+            <div class="img-ph" style="min-height:150px">
+              <span>Cocina / isla central</span>
+            </div>
+          )}
+        </div>
+        <div data-reveal data-delay="2">
+          {p.casaImagenes?.[2] ? (
+            <img src={imgSrc(p.casaImagenes[2], 600)} alt="Suite principal" />
+          ) : (
+            <div class="img-ph" style="min-height:150px">
+              <span>Suite principal / materiales</span>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+
+    {casaDetalles.length > 0 && (
+      <div class="casa-detail-list">
+        {casaDetalles.map((d: any, i: number) => (
+          <div class="casa-detail" data-reveal data-delay={String(i)}>
+            <div class="n">{d.numero}</div>
+            <h3>{d.titulo}</h3>
+            <p>{d.descripcion}</p>
+          </div>
+        ))}
+      </div>
+    )}
+  </div>
+</section>
+
+<!-- EL EXTERIOR -->
+<section class="s exterior" id="exterior">
+  <div class="wrap">
+    <div class="sec-head" data-reveal>
+      {p.exteriorEyebrow && <span class="eyebrow">{p.exteriorEyebrow}</span>}
+      <h2 class="sec-title">El afuera no es el<br>fondo. Es <em>un cuarto más.</em></h2>
+    </div>
+
+    <div class="ext-grid">
+      <div class="ext-photo-tall" data-reveal>
+        {p.exteriorImagenes?.[0] ? (
+          <img src={imgSrc(p.exteriorImagenes[0], 700)} alt="Galería exterior" />
+        ) : (
+          <div class="img-ph img-ph-dark" style="min-height:400px">
+            <span>Galería — vista al parque</span>
+          </div>
+        )}
+      </div>
+      <div class="ext-body" data-reveal data-delay="1">
+        {p.exteriorTexto1 && <p class="body" set:html={p.exteriorTexto1}></p>}
+        {p.exteriorTexto2 && <p class="body" set:html={p.exteriorTexto2}></p>}
+        {exteriorStats.length > 0 && (
+          <div class="ext-stats">
+            {exteriorStats.map((s: any) => (
+              <div class="ext-stat">
+                <div class="num">{s.numero}</div>
+                <div class="lbl">{s.etiqueta}</div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+
+    <div class="ext-strip">
+      <div data-reveal>
+        {p.exteriorImagenes?.[1] ? (
+          <img src={imgSrc(p.exteriorImagenes[1], 700)} alt="Pileta" />
+        ) : (
+          <div class="img-ph img-ph-dark" style="min-height:200px">
+            <span>Pileta al atardecer</span>
+          </div>
+        )}
+      </div>
+      <div data-reveal data-delay="1">
+        {p.exteriorImagenes?.[2] ? (
+          <img src={imgSrc(p.exteriorImagenes[2], 700)} alt="Parque" />
+        ) : (
+          <div class="img-ph img-ph-dark" style="min-height:200px">
+            <span>Parque / árboles / jardín</span>
+          </div>
+        )}
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GALERÍA -->
+<section class="s galeria" id="galeria">
+  <div class="wrap">
+    <div class="sec-head" data-reveal>
+      <span class="eyebrow">Galería</span>
+      <h2 class="sec-title">Recorrela como si <em>ya fuera tuya.</em></h2>
+    </div>
+    <div class="gal-grid">
+      {[...Array(7)].map((_, i) => (
+        <div class={`g${i + 1}`} data-reveal data-delay={String(i % 3)}>
+          {galeria[i] ? (
+            <img src={imgSrc(galeria[i], i === 0 ? 1000 : 600)} alt={`Galería ${i + 1}`} />
+          ) : (
+            <div class="img-ph" style="min-height:120px">
+              <span>Imagen {i + 1}</span>
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<!-- PERFILES -->
+<section class="s perfiles" id="perfiles">
+  <div class="wrap">
+    <div class="sec-head" data-reveal>
+      <span class="eyebrow">Imaginá tu vida acá</span>
+      <h2 class="sec-title">No es para cualquiera.<br>Es para <em>vos.</em></h2>
+    </div>
+    {perfiles.length > 0 && (
+      <div class="perfil-grid">
+        {perfiles.map((pf: any, i: number) => (
+          <div class="perfil" data-reveal data-delay={String(i)}>
+            <div class="tag">{pf.tag}</div>
+            <h3>{pf.titulo}</h3>
+            <p>{pf.descripcion}</p>
+            <blockquote>{pf.cita}</blockquote>
+          </div>
+        ))}
+      </div>
+    )}
+  </div>
+</section>
+
+<!-- FICHA TÉCNICA -->
+<section class="s ficha" id="ficha">
+  <div class="wrap">
+    <div class="sec-head" style="margin-bottom:0" data-reveal>
+      <span class="eyebrow">Ficha técnica</span>
+      <h2 class="sec-title">Los números, sin <em>vueltas.</em></h2>
+      {precio && (
+        <div class="price-card" data-reveal data-delay="1">
+          <span class="eyebrow">Valor de publicación</span>
+          <div class="amount">{precio}</div>
+          {p.ubicacion && <p class="note">{p.ubicacion} · Comercializa Casa Materia.</p>}
+        </div>
+      )}
+    </div>
+    {ficha.length > 0 && (
+      <div data-reveal data-delay="1">
+        <div class="ficha-spec">
+          {ficha.map((f: any) => (
+            <div class="ficha-row">
+              <span class="k">{f.clave}</span>
+              <span class="v">{f.valor}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    )}
+  </div>
+</section>
+
+<!-- UBICACIÓN -->
+<section class="s ubicacion" id="ubicacion">
+  <div class="wrap">
+    <div class="ubic-grid">
+      <div data-reveal>
+        <span class="eyebrow">Ubicación</span>
+        {p.ubicacionTitulo && (
+          <h2 class="sec-title" style="margin-top:1.2rem">
+            {p.ubicacionTitulo.includes('.') ? (
+              <Fragment set:html={p.ubicacionTitulo.replace(/([^.]+)\./, '<span>$1</span><br><em>$&</em>').replace(/<em>([^.]+)\.<\/em>/, '<em>$1.</em>')} />
+            ) : p.ubicacionTitulo}
+          </h2>
+        )}
+        {p.ubicacionTexto && <p class="body" style="margin-top:1.4rem">{p.ubicacionTexto}</p>}
+        {ubicacionCercanos.length > 0 && (
+          <div class="ubic-near">
+            {ubicacionCercanos.map((c: any) => (
+              <div class="row">
+                <span>{c.lugar}</span>
+                <span>{c.tiempo}</span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+      <div class="ubic-map" data-reveal data-delay="1">
+        {p.ubicacionImagen ? (
+          <img src={imgSrc(p.ubicacionImagen, 800)} alt="Mapa de ubicación" />
+        ) : (
+          <div class="img-ph" style="min-height:300px">
+            <span>Mapa / vista aérea del lote</span>
+          </div>
+        )}
+        <div class="ubic-pin">
+          <div class="dot"></div>
+          <div class="lbl">La propiedad</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VISITA PRIVADA -->
+<section class="s visita" id="visita">
+  <div class="wrap">
+    <div data-reveal>
+      <span class="eyebrow">Visita privada · por invitación</span>
+      <h2>Conocela antes<br>que <em>el mercado.</em></h2>
+      <p class="blurb">No coordinamos citas — coordinamos experiencias. Dejanos tus datos y un asesor de Casa Materia se contacta para agendar una visita privada, sin apuro y sin otros compradores en la casa.</p>
+      {precio && (
+        <div class="price-spot">
+          <div class="k">Valor de publicación</div>
+          <div class="v">{precio}</div>
+        </div>
+      )}
+    </div>
+    <div data-reveal data-delay="1">
+      <form class="form" id="visitaForm" novalidate data-form-id={cmFormId} data-project={titulo}>
+        <div class="field-row">
+          <div class="field">
+            <label for="nombre">Nombre *</label>
+            <input type="text" id="nombre" name="nombre" placeholder="Tu nombre" required />
+          </div>
+          <div class="field">
+            <label for="tel">Teléfono *</label>
+            <input type="tel" id="tel" name="tel" placeholder="+54 9 11 ..." required />
+          </div>
+        </div>
+        <div class="field">
+          <label for="email">Email *</label>
+          <input type="email" id="email" name="email" placeholder="tu@email.com" required />
+        </div>
+        <div class="field">
+          <label for="momento">¿Cuándo te gustaría visitarla?</label>
+          <select id="momento" name="momento">
+            <option>Esta semana</option>
+            <option>El fin de semana</option>
+            <option>Las próximas dos semanas</option>
+            <option>Todavía estoy explorando</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="msg">Mensaje (opcional)</label>
+          <textarea id="msg" name="msg" rows="3" placeholder="Contanos qué buscás en una casa."></textarea>
+        </div>
+        <button type="submit" class="submit" id="visitaSubmit">
+          Solicitar visita privada →
+        </button>
+      </form>
+      <div class="form-success" id="visitaSuccess">
+        <div class="check">Gracias — recibimos tu solicitud.</div>
+        <p>Un asesor de Casa Materia se va a contactar dentro de las próximas 24 horas para coordinar tu visita privada.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot-top">
+      <div>
+        <div class="foot-logo">Casa <em>Materia</em></div>
+        <div class="foot-tagline">REAL ESTATE BOUTIQUE</div>
+      </div>
+      <div class="foot-cols">
+        <div class="foot-col">
+          <div class="h">Proyecto</div>
+          <a href="#concepto">El concepto</a>
+          <a href="#casa">La casa</a>
+          <a href="#exterior">El exterior</a>
+          <a href="#galeria">Galería</a>
+        </div>
+        <div class="foot-col">
+          <div class="h">Contacto</div>
+          <a href="#visita">Visita privada</a>
+          <a href="/">casamateria.sombrerorosa.com</a>
+        </div>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>{titulo} · {p.ubicacion || ''} {precio ? `· ${precio}` : ''}</span>
+      <span>© 2026 Casa Materia · <a href="https://sombrerorosa.com" target="_blank" rel="noopener">Sombrero Rosa</a></span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function () {
+  // Nav scroll
+  const nav = document.getElementById('mainNav');
+  if (nav) {
+    const onScroll = () => nav.classList.toggle('scrolled', window.scrollY > 40);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+  }
+
+  // Reveal on scroll
+  const reveals = document.querySelectorAll('[data-reveal]');
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(en => {
+        if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -6% 0px' });
+    reveals.forEach(r => io.observe(r));
+  } else {
+    reveals.forEach(r => r.classList.add('in'));
+  }
+
+  // Form
+  const form = document.getElementById('visitaForm') as HTMLFormElement | null;
+  const successEl = document.getElementById('visitaSuccess');
+  const submitBtn = document.getElementById('visitaSubmit') as HTMLButtonElement | null;
+  if (!form || !successEl || !submitBtn) return;
+
+  const emailRx = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const phoneRx = /^[\+]?[\d\s\-\(\)]{7,20}$/;
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const nombreEl = form.querySelector('#nombre') as HTMLInputElement;
+    const telEl    = form.querySelector('#tel') as HTMLInputElement;
+    const emailEl  = form.querySelector('#email') as HTMLInputElement;
+    const momentoEl = form.querySelector('#momento') as HTMLSelectElement;
+    const msgEl    = form.querySelector('#msg') as HTMLTextAreaElement;
+
+    let valid = true;
+    [nombreEl, telEl, emailEl].forEach(el => {
+      if (!el.value.trim()) { el.style.borderColor = '#A6604A'; valid = false; }
+      else el.style.borderColor = '';
+    });
+    if (emailEl.value && !emailRx.test(emailEl.value)) { emailEl.style.borderColor = '#A6604A'; valid = false; }
+    if (telEl.value && !phoneRx.test(telEl.value)) { telEl.style.borderColor = '#A6604A'; valid = false; }
+    if (!valid) return;
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Enviando...';
+
+    const projectName = form.dataset.project || document.title;
+    const mensajeCompleto = [
+      `Propiedad: ${projectName}`,
+      `Momento: ${momentoEl.value}`,
+      msgEl.value.trim() ? `Mensaje: ${msgEl.value.trim()}` : null,
+    ].filter(Boolean).join('\n');
+
+    const PORTAL_ID = '49258509';
+    const FORM_ID = form.dataset.formId;
+
+    if (!FORM_ID) {
+      // Form ID not configured — show success for testing
+      form.style.display = 'none';
+      successEl.classList.add('show');
+      return;
+    }
+
+    try {
+      const res = await fetch(
+        `https://api.hsforms.com/submissions/v3/integration/submit/${PORTAL_ID}/${FORM_ID}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            fields: [
+              { name: 'firstname', value: nombreEl.value.trim() },
+              { name: 'email', value: emailEl.value.trim() },
+              { name: 'hs_whatsapp_phone_number', value: telEl.value.trim() },
+              { name: 'message', value: mensajeCompleto },
+            ],
+            context: { pageUri: window.location.href, pageName: document.title },
+          }),
+        }
+      );
+
+      if (res.ok) {
+        form.style.display = 'none';
+        successEl.classList.add('show');
+      } else {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Solicitar visita privada →';
+      }
+    } catch {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Solicitar visita privada →';
+    }
+  });
+})();
+</script>
+</BaseLayout>

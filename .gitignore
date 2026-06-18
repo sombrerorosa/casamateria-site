@@ -1,0 +1,6 @@
+node_modules/
+dist/
+studio-dist/
+.env
+.DS_Store
+.astro/

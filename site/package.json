@@ -1,0 +1,19 @@
+{
+  "name": "casamateria-site",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "studio": "sanity dev"
+  },
+  "dependencies": {
+    "@sanity/client": "^7.0.0",
+    "@sanity/image-url": "^2.0.0",
+    "@sanity/structure": "^2.0.0",
+    "astro": "^6.0.0",
+    "sanity": "^5.0.0",
+    "styled-components": "^6.0.0"
+  }
+}

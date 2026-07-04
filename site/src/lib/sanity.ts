@@ -1,7 +1,12 @@
 import { createClient } from '@sanity/client';
 
+const rawProjectId = import.meta.env.SANITY_PROJECT_ID;
+const projectId = (typeof rawProjectId === 'string' && /^[a-z0-9-]+$/.test(rawProjectId))
+  ? rawProjectId
+  : '42w8s11j';
+
 export const client = createClient({
-  projectId: import.meta.env.SANITY_PROJECT_ID || '42w8s11j',
+  projectId,
   dataset: import.meta.env.SANITY_DATASET || 'casamateria',
   apiVersion: '2024-01-01',
   useCdn: true,

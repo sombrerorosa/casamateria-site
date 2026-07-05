@@ -81,13 +81,9 @@ function propSpecs(p: any): string {
   .hero h1 .grad { background: linear-gradient(96deg, var(--cm-on-dark-soft) 0%, var(--cm-on-dark-soft) 38%, var(--cm-rosa) 118%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent; }
   .hero-sub { font-family: var(--cm-sans); font-weight: 400; font-size: clamp(16px, 1.9vw, 20px); color: rgba(200,187,168,0.78); max-width: 40ch; line-height: 1.35; margin-bottom: 2.2rem; }
   .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
-  .hero-foot { position: absolute; left: clamp(1.5rem, 5vw, 4rem); right: clamp(1.5rem, 5vw, 4rem); bottom: 1.8rem; z-index: 3; display: flex; justify-content: space-between; align-items: flex-end; border-top: 1px solid var(--cm-border-dark); padding-top: 1.1rem; max-width: var(--maxw); margin: 0 auto; }
-  .hero-foot .k { font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(200,187,168,0.42); }
-  .hero-foot .v { font-size: 13px; color: rgba(200,187,168,0.72); margin-top: 4px; }
   @media (max-width: 720px) {
     .hero-bg { width: 100%; }
     .hero-bg::after { background: linear-gradient(180deg, rgba(42,40,37,0.78) 0%, rgba(42,40,37,0.84) 60%, var(--cm-carbon) 100%); }
-    .hero-foot { display: none; }
   }
 
   /* ═══ PROPUESTA ═══ */
@@ -238,13 +234,6 @@ function propSpecs(p: any): string {
       <a href="#contacto" class="btn btn-solid">Agendar un llamado →</a>
       <a href="#propiedades" class="btn btn-ghost on-dark">Ver propiedades</a>
     </div>
-  </div>
-  <div class="hero-foot">
-    <div>
-      <div class="k">Selección actual</div>
-      <div class="v">{proyectos.length} propiedad{proyectos.length !== 1 ? 'es' : ''} en venta</div>
-    </div>
-    <div class="k" style="text-align:right">Pocas. Muy elegidas.</div>
   </div>
 </header>
 

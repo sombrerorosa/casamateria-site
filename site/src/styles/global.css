@@ -1,26 +1,48 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --carbon:  #2A2825;
-  --carbon-2:#211F1C;
-  --tierra:  #8B7355;
-  --piedra:  #C8BBA8;
-  --crema:   #F5F0E8;
-  --blanco:  #FAF8F4;
-  --verde:   #6B8840;
-  --mid:     #6B6560;
-  --accent:  #8B7355;
-  --ease: cubic-bezier(0.22, 1, 0.36, 1);
-  --maxw: 1180px;
-  --reveal-dur: 900ms;
+  /* Design tokens v1.1 */
+  --cm-blanco:       #FAF8F4;
+  --cm-crema:        #F5F0E8;
+  --cm-carbon:       #2A2825;
+  --cm-carbon-deep:  #1E1D1B;
+  --cm-ink:          #2A2825;
+  --cm-ink-body:     #6B6560;
+  --cm-on-dark:      #F5F0E8;
+  --cm-on-dark-soft: #C8BBA8;
+  --cm-tierra:       #8B7355;
+  --cm-tierra-text:  #7D674C;
+  --cm-verde:        #6B8840;
+  --cm-verde-text:   #5B7436;
+  --cm-rosa:         #D5848E;
+  --cm-border:       rgba(42,40,37,0.12);
+  --cm-border-dark:  rgba(200,187,168,0.16);
+  --cm-serif:        'Cormorant Garamond', Georgia, serif;
+  --cm-sans:         'Jost', system-ui, sans-serif;
+  --cm-ease:         cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* Legacy aliases */
+  --carbon:      var(--cm-carbon);
+  --carbon-2:    var(--cm-carbon-deep);
+  --tierra:      var(--cm-tierra);
+  --piedra:      var(--cm-on-dark-soft);
+  --crema:       var(--cm-crema);
+  --blanco:      var(--cm-blanco);
+  --verde:       var(--cm-verde);
+  --mid:         var(--cm-ink-body);
+  --accent:      var(--cm-tierra);
+  --accent-text: var(--cm-tierra-text);
+  --ease:        var(--cm-ease);
+  --maxw:        1180px;
+  --reveal-dur:  900ms;
 }
 
 html { font-size: 16px; scroll-behavior: smooth; }
 body {
-  font-family: 'Jost', sans-serif;
+  font-family: var(--cm-sans), sans-serif;
   font-weight: 300;
-  background: var(--blanco);
-  color: var(--mid);
+  background: var(--cm-blanco);
+  color: var(--cm-ink-body);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;

@@ -3,6 +3,21 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import { getAllProyectoSlugs, getProyectoBySlug } from '../lib/sanity';
 import { urlFor } from '../lib/imageUrl';
 
+const FALLBACK_PROYECTOS = [
+  {
+    slug: { current: 'habitar-sin-fronteras' },
+    tituloLinea1: 'Habitar sin',
+    tituloLinea2: 'Fronteras',
+    titulo: 'Habitar sin Fronteras',
+    ubicacion: 'Fincas de San Vicente · GBA Sur',
+    tagline: 'La casa donde el adentro y el afuera son la misma cosa. 310 m² sobre un lote de 3.000 m², con pileta y una galería que se vive todo el año.',
+    ficha: [{ valor: '310 m²' }, { valor: 'lote 3.000 m²' }, { valor: '3 habitaciones' }],
+    precio: 'USD 320.000',
+    heroImage: null,
+    estado: 'en-venta',
+  },
+];
+
 let proyectos: any[] = [];
 try {
   const slugs = await getAllProyectoSlugs();
@@ -11,6 +26,8 @@ try {
     proyectos = fetchedAll.filter(Boolean);
   }
 } catch {}
+
+if (!proyectos.length) proyectos = FALLBACK_PROYECTOS;
 
 function imgSrc(image: any, width = 900) {
   if (!image?.asset) return '';
@@ -280,7 +297,7 @@ function propSpecs(p: any): string {
               {imgUrl ? (
                 <img src={imgUrl} alt={p.titulo} />
               ) : (
-                <div class="ph-ph"><span>{p.titulo}</span></div>
+                <img src="/hero-bg.jpg" alt={p.titulo} />
               )}
             </div>
             <div class="prop-body">

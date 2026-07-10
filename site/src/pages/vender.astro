@@ -134,20 +134,6 @@ function imgSrc(image: any, width = 900) {
   .manifesto-sign { margin-top: 2.6rem; font-family: var(--cm-serif); font-style: italic; font-size: 17px; color: rgba(200,187,168,0.5); }
   @media (max-width: 760px) { .manifesto .wrap { grid-template-columns: 1fr; gap: 1.6rem; } }
 
-  /* DUENOS */
-  .duenos .wrap { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(2.5rem,6vw,5rem); align-items: start; }
-  .value-stat { border-top: 1px solid var(--cm-border); padding-top: 1.4rem; margin-top: 2rem; }
-  .value-stat .num { font-family: var(--cm-serif); font-weight: 300; font-size: clamp(44px,6vw,72px); line-height: 1; color: var(--cm-verde); }
-  .value-stat .lbl { font-size: 13px; color: var(--cm-ink-body); line-height: 1.7; margin-top: 0.8rem; max-width: 38ch; }
-  .value-stat .lbl strong { color: var(--cm-ink); font-weight: 500; }
-  .cond-list { display: flex; flex-direction: column; gap: 0; }
-  .cond { display: grid; grid-template-columns: 150px 1fr; gap: 1.5rem; padding: 1.15rem 0; border-bottom: 1px solid var(--cm-border); align-items: baseline; }
-  .cond:first-child { border-top: 1px solid var(--cm-border); }
-  .cond .k { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent-text); }
-  .cond .v { font-size: 14px; line-height: 1.7; color: var(--cm-ink-body); }
-  .cond .v strong { color: var(--cm-ink); font-weight: 500; }
-  @media (max-width: 820px) { .duenos .wrap { grid-template-columns: 1fr; } .cond { grid-template-columns: 1fr; gap: 0.3rem; } }
-
   /* CONTACTO */
   .contacto { background: var(--cm-carbon); color: var(--cm-on-dark); }
   .contacto .wrap { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(2.5rem,6vw,5rem); align-items: start; }
@@ -212,7 +198,6 @@ function imgSrc(image: any, width = 900) {
       <a href="#esencia">Quiénes somos</a>
       <a href="#metodo">El método</a>
       <a href="#propiedades">Propiedades</a>
-      <a href="#propietarios">Propietarios</a>
     </div>
     <a href="#contacto" class="nav-cta">Reunión sin compromiso</a>
   </div>
@@ -378,42 +363,6 @@ function imgSrc(image: any, width = 900) {
   </div>
 </section>
 
-<!-- PROPIETARIOS -->
-<section class="s duenos" id="propietarios">
-  <div class="wrap">
-    <div data-reveal="">
-      <span class="eyebrow">04 · Para propietarios</span>
-      <h2 class="sec-title" style="margin-top:1.3rem">La diferencia en precio<br>la hace <em>la marca.</em></h2>
-      <p class="body-txt" style="margin-top:1.5rem">El impacto de comunicar bien no es abstracto — es medible en el precio de cierre. En el segmento premium, una propiedad sin narrativa sale al mercado entre un 15% y 20% por debajo de su valor real y termina negociándose a la baja.</p>
-      <div class="value-stat">
-        <div class="num">+20%</div>
-        <div class="lbl"><strong>La diferencia en el precio de cierre</strong> entre una comunicación de autor y una ficha de portal, en una propiedad del segmento. Ese es el valor de comunicar bien.</div>
-      </div>
-    </div>
-    <div data-reveal="" data-delay="1">
-      <div class="cond-list">
-        <div class="cond">
-          <div class="k">Exclusividad</div>
-          <div class="v">Trabajamos en exclusividad. Cada proyecto recibe el <strong>100% de la capacidad creativa</strong> de la agencia.</div>
-        </div>
-        <div class="cond">
-          <div class="k">Perfil</div>
-          <div class="v">Propiedades premium en barrios cerrados o urbanizaciones consolidadas de GBA y CABA. <strong>Desde USD 250.000.</strong></div>
-        </div>
-        <div class="cond">
-          <div class="k">Plazo</div>
-          <div class="v">Del concepto a las primeras visitas, <strong>3 a 4 semanas.</strong> Cierre estimado en 4 a 8.</div>
-        </div>
-        <div class="cond">
-          <div class="k">Propietario socio</div>
-          <div class="v">Compartimos el análisis de mercado, la valuación y la estrategia. <strong>Participás informado.</strong></div>
-        </div>
-      </div>
-      <a href="#contacto" class="btn btn-ghost" style="margin-top:2rem">Quiero una valuación →</a>
-    </div>
-  </div>
-</section>
-
 <!-- CONTACTO -->
 <section class="s contacto" id="contacto">
   <div class="wrap">
@@ -483,7 +432,6 @@ function imgSrc(image: any, width = 900) {
           <div class="h">Agencia</div>
           <a href="#esencia">Quiénes somos</a>
           <a href="#metodo">El método</a>
-          <a href="#propietarios">Para propietarios</a>
         </div>
         <div class="foot-col">
           <div class="h">Propiedades</div>

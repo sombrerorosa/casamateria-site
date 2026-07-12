@@ -98,9 +98,12 @@ export default {
     },
     {
       name: 'casaImagenes',
-      title: 'La casa — imágenes (1ª = grande, 2ª y 3ª = pequeñas)',
+      title: 'La casa — fotos y videos (1ª = grande, 2ª y 3ª = pequeñas)',
       type: 'array',
-      of: [{ type: 'image', options: { hotspot: true } }],
+      of: [
+        { type: 'image', options: { hotspot: true } },
+        { type: 'file', title: 'Video', options: { accept: 'video/mp4,video/webm,video/ogg' } },
+      ],
     },
     {
       name: 'casaDetalles',
@@ -150,16 +153,22 @@ export default {
     },
     {
       name: 'exteriorImagenes',
-      title: 'El exterior — imágenes (1ª = vertical izq, 2ª y 3ª = strip inferior)',
+      title: 'El exterior — fotos y videos (1ª = vertical izq, 2ª y 3ª = strip inferior)',
       type: 'array',
-      of: [{ type: 'image', options: { hotspot: true } }],
+      of: [
+        { type: 'image', options: { hotspot: true } },
+        { type: 'file', title: 'Video', options: { accept: 'video/mp4,video/webm,video/ogg' } },
+      ],
     },
     // ── Galería ──
     {
       name: 'galeria',
-      title: 'Galería — imágenes (hasta 7)',
+      title: 'Galería — fotos y videos (hasta 7)',
       type: 'array',
-      of: [{ type: 'image', options: { hotspot: true } }],
+      of: [
+        { type: 'image', options: { hotspot: true } },
+        { type: 'file', title: 'Video', options: { accept: 'video/mp4,video/webm,video/ogg' } },
+      ],
     },
     // ── Perfiles ──
     {

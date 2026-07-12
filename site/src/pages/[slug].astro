@@ -94,9 +94,23 @@ function imgSrc(image: any, width = 1400) {
   return urlFor(image).width(width).auto('format').url();
 }
 
-const casaDetalles = p.casaDetalles?.length ? p.casaDetalles : [];
-const exteriorStats = p.exteriorStats?.length ? p.exteriorStats : [];
-const galeria = p.galeria?.length ? p.galeria : [];
+const casaDetalles    = p.casaDetalles?.length    ? p.casaDetalles    : [];
+const exteriorStats   = p.exteriorStats?.length   ? p.exteriorStats   : [];
+const galeria         = p.galeria?.length          ? p.galeria          : [];
+
+function getMedia(arr: any[], thumbW = 900) {
+  if (!arr?.length) return [] as Array<{thumb:string;full:string;type:'image'|'video'}>;
+  return arr.map((item: any) => {
+    if (!item) return null;
+    const isVid = item._type === 'file';
+    const url = isVid ? (item.asset?.url || '') : '';
+    return { thumb: isVid ? url : imgSrc(item, thumbW), full: isVid ? url : imgSrc(item, 1600), type: (isVid ? 'video' : 'image') as 'image'|'video' };
+  }).filter(Boolean) as Array<{thumb:string;full:string;type:'image'|'video'}>;
+}
+
+const casaMedia     = getMedia(p.casaImagenes,     900);
+const exteriorMedia = getMedia(p.exteriorImagenes, 700);
+const galeriaMedia  = getMedia(p.galeria,          700);
 const perfiles = p.perfiles?.length ? p.perfiles : [];
 const ficha = p.ficha?.length ? p.ficha : [];
 const ubicacionCercanos = p.ubicacionCercanos?.length ? p.ubicacionCercanos : [];
@@ -472,6 +486,22 @@ const ubicacionCercanos = p.ubicacionCercanos?.length ? p.ubicacionCercanos : []
     [data-reveal] { opacity: 1; transform: none; transition: none; }
     html { scroll-behavior: auto; }
   }
+
+  /* ── Lightbox ── */
+  .lb { position: fixed; inset: 0; z-index: 900; background: rgba(0,0,0,0.94); display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 280ms ease; }
+  .lb.open { opacity: 1; pointer-events: all; }
+  .lb-media { position: relative; display: flex; align-items: center; justify-content: center; }
+  .lb-media img { max-width: 90vw; max-height: 85vh; object-fit: contain; display: block; }
+  .lb-media video { max-width: 90vw; max-height: 85vh; display: block; background: #000; }
+  .lb-close { position: absolute; top: 1.4rem; right: 1.6rem; background: none; border: none; color: rgba(255,255,255,0.6); font-size: 30px; line-height: 1; cursor: pointer; padding: 0.5rem; transition: color 180ms; z-index: 2; }
+  .lb-close:hover { color: #fff; }
+  .lb-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.42); border: none; color: rgba(255,255,255,0.65); font-size: 26px; line-height: 1; cursor: pointer; padding: 1rem 1.2rem; transition: background 200ms, color 200ms; border-radius: 2px; }
+  .lb-btn:hover { background: rgba(0,0,0,0.75); color: #fff; }
+  #lbPrev { left: 1rem; }
+  #lbNext { right: 1rem; }
+  .lb-counter { position: absolute; bottom: 1.4rem; left: 50%; transform: translateX(-50%); font-size: 11px; letter-spacing: 0.18em; color: rgba(255,255,255,0.35); }
+  .lb-trigger { cursor: zoom-in; display: block; width: 100%; height: 100%; position: relative; }
+  .lb-trigger img, .lb-trigger video { width: 100%; height: 100%; object-fit: cover; display: block; }
 </style>
 
 <!-- NAV -->
@@ -542,8 +572,12 @@ const ubicacionCercanos = p.ubicacionCercanos?.length ? p.ubicacionCercanos : []
 
     <div class="casa-feature">
       <div class="big" data-reveal>
-        {p.casaImagenes?.[0] ? (
-          <img src={imgSrc(p.casaImagenes[0], 900)} alt="Imagen principal interior" />
+        {casaMedia[0] ? (
+          <div class="lb-trigger" data-group="casa" data-src={casaMedia[0].full} data-type={casaMedia[0].type}>
+            {casaMedia[0].type === 'video'
+              ? <video src={casaMedia[0].thumb} muted autoplay loop playsinline />
+              : <img src={casaMedia[0].thumb} alt="Interior principal" />}
+          </div>
         ) : (
           <div class="img-ph" style="min-height:320px">
             <span>Living — doble altura / ventanal al jardín</span>
@@ -552,8 +586,12 @@ const ubicacionCercanos = p.ubicacionCercanos?.length ? p.ubicacionCercanos : []
       </div>
       <div class="col">
         <div data-reveal data-delay="1">
-          {p.casaImagenes?.[1] ? (
-            <img src={imgSrc(p.casaImagenes[1], 600)} alt="Cocina" />
+          {casaMedia[1] ? (
+            <div class="lb-trigger" data-group="casa" data-src={casaMedia[1].full} data-type={casaMedia[1].type}>
+              {casaMedia[1].type === 'video'
+                ? <video src={casaMedia[1].thumb} muted autoplay loop playsinline />
+                : <img src={casaMedia[1].thumb} alt="Cocina" />}
+            </div>
           ) : (
             <div class="img-ph" style="min-height:150px">
               <span>Cocina / isla central</span>
@@ -561,8 +599,12 @@ const ubicacionCercanos = p.ubicacionCercanos?.length ? p.ubicacionCercanos : []
           )}
         </div>
         <div data-reveal data-delay="2">
-          {p.casaImagenes?.[2] ? (
-            <img src={imgSrc(p.casaImagenes[2], 600)} alt="Suite principal" />
+          {casaMedia[2] ? (
+            <div class="lb-trigger" data-group="casa" data-src={casaMedia[2].full} data-type={casaMedia[2].type}>
+              {casaMedia[2].type === 'video'
+                ? <video src={casaMedia[2].thumb} muted autoplay loop playsinline />
+                : <img src={casaMedia[2].thumb} alt="Suite principal" />}
+            </div>
           ) : (
             <div class="img-ph" style="min-height:150px">
               <span>Suite principal / materiales</span>
@@ -596,8 +638,12 @@ const ubicacionCercanos = p.ubicacionCercanos?.length ? p.ubicacionCercanos : []
 
     <div class="ext-grid">
       <div class="ext-photo-tall" data-reveal>
-        {p.exteriorImagenes?.[0] ? (
-          <img src={imgSrc(p.exteriorImagenes[0], 700)} alt="Galería exterior" />
+        {exteriorMedia[0] ? (
+          <div class="lb-trigger" data-group="exterior" data-src={exteriorMedia[0].full} data-type={exteriorMedia[0].type}>
+            {exteriorMedia[0].type === 'video'
+              ? <video src={exteriorMedia[0].thumb} muted autoplay loop playsinline />
+              : <img src={exteriorMedia[0].thumb} alt="Galería exterior" />}
+          </div>
         ) : (
           <div class="img-ph img-ph-dark" style="min-height:400px">
             <span>Galería — vista al parque</span>
@@ -622,8 +668,12 @@ const ubicacionCercanos = p.ubicacionCercanos?.length ? p.ubicacionCercanos : []
 
     <div class="ext-strip">
       <div data-reveal>
-        {p.exteriorImagenes?.[1] ? (
-          <img src={imgSrc(p.exteriorImagenes[1], 700)} alt="Pileta" />
+        {exteriorMedia[1] ? (
+          <div class="lb-trigger" data-group="exterior" data-src={exteriorMedia[1].full} data-type={exteriorMedia[1].type}>
+            {exteriorMedia[1].type === 'video'
+              ? <video src={exteriorMedia[1].thumb} muted autoplay loop playsinline />
+              : <img src={exteriorMedia[1].thumb} alt="Pileta" />}
+          </div>
         ) : (
           <div class="img-ph img-ph-dark" style="min-height:200px">
             <span>Pileta al atardecer</span>
@@ -631,8 +681,12 @@ const ubicacionCercanos = p.ubicacionCercanos?.length ? p.ubicacionCercanos : []
         )}
       </div>
       <div data-reveal data-delay="1">
-        {p.exteriorImagenes?.[2] ? (
-          <img src={imgSrc(p.exteriorImagenes[2], 700)} alt="Parque" />
+        {exteriorMedia[2] ? (
+          <div class="lb-trigger" data-group="exterior" data-src={exteriorMedia[2].full} data-type={exteriorMedia[2].type}>
+            {exteriorMedia[2].type === 'video'
+              ? <video src={exteriorMedia[2].thumb} muted autoplay loop playsinline />
+              : <img src={exteriorMedia[2].thumb} alt="Parque" />}
+          </div>
         ) : (
           <div class="img-ph img-ph-dark" style="min-height:200px">
             <span>Parque / árboles / jardín</span>
@@ -653,8 +707,12 @@ const ubicacionCercanos = p.ubicacionCercanos?.length ? p.ubicacionCercanos : []
     <div class="gal-grid">
       {[...Array(7)].map((_, i) => (
         <div class={`g${i + 1}`} data-reveal data-delay={String(i % 3)}>
-          {galeria[i] ? (
-            <img src={imgSrc(galeria[i], i === 0 ? 1000 : 600)} alt={`Galería ${i + 1}`} />
+          {galeriaMedia[i] ? (
+            <div class="lb-trigger" data-group="galeria" data-src={galeriaMedia[i].full} data-type={galeriaMedia[i].type}>
+              {galeriaMedia[i].type === 'video'
+                ? <video src={galeriaMedia[i].thumb} muted autoplay loop playsinline />
+                : <img src={galeriaMedia[i].thumb} alt={`Galería ${i + 1}`} />}
+            </div>
           ) : (
             <div class="img-ph" style="min-height:120px">
               <span>Imagen {i + 1}</span>
@@ -945,5 +1003,95 @@ const ubicacionCercanos = p.ubicacionCercanos?.length ? p.ubicacionCercanos : []
     }
   });
 })();
+
+// ── Lightbox ──
+(function () {
+  const lb       = document.getElementById('lb');
+  const lbImg    = document.getElementById('lbImg') as HTMLImageElement;
+  const lbVideo  = document.getElementById('lbVideo') as HTMLVideoElement;
+  const lbCounter = document.getElementById('lbCounter');
+  const lbClose  = document.getElementById('lbClose');
+  const lbPrev   = document.getElementById('lbPrev');
+  const lbNext   = document.getElementById('lbNext');
+  if (!lb || !lbImg || !lbVideo) return;
+
+  type LbItem = { src: string; type: string };
+  const groups: Record<string, LbItem[]> = {};
+  document.querySelectorAll<HTMLElement>('.lb-trigger').forEach(el => {
+    const g = el.dataset.group || 'default';
+    if (!groups[g]) groups[g] = [];
+    groups[g].push({ src: el.dataset.src || '', type: el.dataset.type || 'image' });
+  });
+
+  let currentGroup: LbItem[] = [];
+  let currentIdx = 0;
+
+  function showItem(idx: number) {
+    currentIdx = (idx + currentGroup.length) % currentGroup.length;
+    const item = currentGroup[currentIdx];
+    if (item.type === 'video') {
+      lbImg.style.display = 'none';
+      lbVideo.style.display = '';
+      lbVideo.src = item.src;
+      lbVideo.load();
+    } else {
+      lbVideo.pause(); lbVideo.src = '';
+      lbVideo.style.display = 'none';
+      lbImg.style.display = '';
+      lbImg.src = item.src;
+    }
+    if (lbCounter) lbCounter.textContent = `${currentIdx + 1} / ${currentGroup.length}`;
+  }
+
+  function open(group: string, idx: number) {
+    currentGroup = groups[group] || [];
+    if (!currentGroup.length) return;
+    showItem(idx);
+    lb.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    lb.focus();
+  }
+
+  function close() {
+    lb.classList.remove('open');
+    lbVideo.pause(); lbVideo.src = '';
+    document.body.style.overflow = '';
+  }
+
+  document.querySelectorAll<HTMLElement>('.lb-trigger').forEach((el, _, all) => {
+    el.addEventListener('click', () => {
+      const g = el.dataset.group || 'default';
+      const groupEls = Array.from(all).filter(e => e.dataset.group === g);
+      const idx = groupEls.indexOf(el);
+      open(g, idx);
+    });
+  });
+
+  lbClose?.addEventListener('click', close);
+  lbPrev?.addEventListener('click', () => showItem(currentIdx - 1));
+  lbNext?.addEventListener('click', () => showItem(currentIdx + 1));
+
+  lb.addEventListener('click', (e) => { if (e.target === lb) close(); });
+
+  document.addEventListener('keydown', (e) => {
+    if (!lb.classList.contains('open')) return;
+    if (e.key === 'Escape') close();
+    if (e.key === 'ArrowLeft') showItem(currentIdx - 1);
+    if (e.key === 'ArrowRight') showItem(currentIdx + 1);
+  });
+})();
 </script>
+
+<!-- Lightbox -->
+<div id="lb" class="lb" role="dialog" aria-modal="true">
+  <button id="lbClose" class="lb-close" aria-label="Cerrar">✕</button>
+  <div class="lb-media">
+    <img id="lbImg" src="" alt="" style="display:none" />
+    <video id="lbVideo" controls playsinline style="display:none"></video>
+  </div>
+  <button id="lbPrev" class="lb-btn" aria-label="Anterior">&#8249;</button>
+  <button id="lbNext" class="lb-btn" aria-label="Siguiente">&#8250;</button>
+  <div id="lbCounter" class="lb-counter"></div>
+</div>
+
 </BaseLayout>

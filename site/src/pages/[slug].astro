@@ -80,7 +80,19 @@ const HABITAR: any = {
   seoDescripcion: 'Propiedad de autor en Fincas de San Vicente. 300 m² cubiertos, lote de 3.000 m², 3 dormitorios en suite, losa radiante, pileta. Presentada por Casa Materia.',
 };
 
-const p = data || (slug === 'habitar-sin-fronteras' ? HABITAR : null);
+const defaults = slug === 'habitar-sin-fronteras' ? HABITAR : {} as any;
+const rawP = data || defaults;
+if (!rawP || !rawP.titulo) return Astro.redirect('/');
+// Merge: Sanity value wins only when non-null/non-empty; otherwise fall back to hardcoded defaults
+const p: any = data
+  ? Object.fromEntries(
+      Object.keys({ ...defaults, ...data }).map(k => {
+        const v = (data as any)[k];
+        const isEmpty = v === null || v === undefined || v === '' || (Array.isArray(v) && v.length === 0);
+        return [k, isEmpty ? (defaults as any)[k] : v];
+      })
+    )
+  : defaults;
 if (!p) return Astro.redirect('/');
 
 const precio = p.precio || '';

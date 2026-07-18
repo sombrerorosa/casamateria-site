@@ -500,7 +500,7 @@ const ubicacionCercanos = p.ubicacionCercanos?.length ? p.ubicacionCercanos : []
   #lbPrev { left: 1rem; }
   #lbNext { right: 1rem; }
   .lb-counter { position: absolute; bottom: 1.4rem; left: 50%; transform: translateX(-50%); font-size: 11px; letter-spacing: 0.18em; color: rgba(255,255,255,0.35); }
-  .lb-trigger { cursor: zoom-in; display: block; width: 100%; height: 100%; position: relative; }
+  .lb-trigger { cursor: zoom-in; }
   .lb-trigger img, .lb-trigger video { width: 100%; height: 100%; object-fit: cover; display: block; }
 </style>
 
@@ -571,46 +571,46 @@ const ubicacionCercanos = p.ubicacionCercanos?.length ? p.ubicacionCercanos : []
     </div>
 
     <div class="casa-feature">
-      <div class="big" data-reveal>
-        {casaMedia[0] ? (
-          <div class="lb-trigger" data-group="casa" data-src={casaMedia[0].full} data-type={casaMedia[0].type}>
-            {casaMedia[0].type === 'video'
-              ? <video src={casaMedia[0].thumb} muted autoplay loop playsinline />
-              : <img src={casaMedia[0].thumb} alt="Interior principal" />}
-          </div>
-        ) : (
+      {casaMedia[0] ? (
+        <div class="big lb-trigger" data-reveal data-group="casa" data-src={casaMedia[0].full} data-type={casaMedia[0].type}>
+          {casaMedia[0].type === 'video'
+            ? <video src={casaMedia[0].thumb} muted autoplay loop playsinline />
+            : <img src={casaMedia[0].thumb} alt="Interior principal" />}
+        </div>
+      ) : (
+        <div class="big" data-reveal>
           <div class="img-ph" style="min-height:320px">
             <span>Living — doble altura / ventanal al jardín</span>
           </div>
-        )}
-      </div>
+        </div>
+      )}
       <div class="col">
-        <div data-reveal data-delay="1">
-          {casaMedia[1] ? (
-            <div class="lb-trigger" data-group="casa" data-src={casaMedia[1].full} data-type={casaMedia[1].type}>
-              {casaMedia[1].type === 'video'
-                ? <video src={casaMedia[1].thumb} muted autoplay loop playsinline />
-                : <img src={casaMedia[1].thumb} alt="Cocina" />}
-            </div>
-          ) : (
+        {casaMedia[1] ? (
+          <div class="lb-trigger" data-reveal data-delay="1" data-group="casa" data-src={casaMedia[1].full} data-type={casaMedia[1].type}>
+            {casaMedia[1].type === 'video'
+              ? <video src={casaMedia[1].thumb} muted autoplay loop playsinline />
+              : <img src={casaMedia[1].thumb} alt="Cocina" />}
+          </div>
+        ) : (
+          <div data-reveal data-delay="1">
             <div class="img-ph" style="min-height:150px">
               <span>Cocina / isla central</span>
             </div>
-          )}
-        </div>
-        <div data-reveal data-delay="2">
-          {casaMedia[2] ? (
-            <div class="lb-trigger" data-group="casa" data-src={casaMedia[2].full} data-type={casaMedia[2].type}>
-              {casaMedia[2].type === 'video'
-                ? <video src={casaMedia[2].thumb} muted autoplay loop playsinline />
-                : <img src={casaMedia[2].thumb} alt="Suite principal" />}
-            </div>
-          ) : (
+          </div>
+        )}
+        {casaMedia[2] ? (
+          <div class="lb-trigger" data-reveal data-delay="2" data-group="casa" data-src={casaMedia[2].full} data-type={casaMedia[2].type}>
+            {casaMedia[2].type === 'video'
+              ? <video src={casaMedia[2].thumb} muted autoplay loop playsinline />
+              : <img src={casaMedia[2].thumb} alt="Suite principal" />}
+          </div>
+        ) : (
+          <div data-reveal data-delay="2">
             <div class="img-ph" style="min-height:150px">
               <span>Suite principal / materiales</span>
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </div>
 
@@ -637,19 +637,19 @@ const ubicacionCercanos = p.ubicacionCercanos?.length ? p.ubicacionCercanos : []
     </div>
 
     <div class="ext-grid">
-      <div class="ext-photo-tall" data-reveal>
-        {exteriorMedia[0] ? (
-          <div class="lb-trigger" data-group="exterior" data-src={exteriorMedia[0].full} data-type={exteriorMedia[0].type}>
-            {exteriorMedia[0].type === 'video'
-              ? <video src={exteriorMedia[0].thumb} muted autoplay loop playsinline />
-              : <img src={exteriorMedia[0].thumb} alt="Galería exterior" />}
-          </div>
-        ) : (
+      {exteriorMedia[0] ? (
+        <div class="ext-photo-tall lb-trigger" data-reveal data-group="exterior" data-src={exteriorMedia[0].full} data-type={exteriorMedia[0].type}>
+          {exteriorMedia[0].type === 'video'
+            ? <video src={exteriorMedia[0].thumb} muted autoplay loop playsinline />
+            : <img src={exteriorMedia[0].thumb} alt="Galería exterior" />}
+        </div>
+      ) : (
+        <div class="ext-photo-tall" data-reveal>
           <div class="img-ph img-ph-dark" style="min-height:400px">
             <span>Galería — vista al parque</span>
           </div>
-        )}
-      </div>
+        </div>
+      )}
       <div class="ext-body" data-reveal data-delay="1">
         {p.exteriorTexto1 && <p class="body" set:html={p.exteriorTexto1}></p>}
         {p.exteriorTexto2 && <p class="body" set:html={p.exteriorTexto2}></p>}
@@ -667,32 +667,32 @@ const ubicacionCercanos = p.ubicacionCercanos?.length ? p.ubicacionCercanos : []
     </div>
 
     <div class="ext-strip">
-      <div data-reveal>
-        {exteriorMedia[1] ? (
-          <div class="lb-trigger" data-group="exterior" data-src={exteriorMedia[1].full} data-type={exteriorMedia[1].type}>
-            {exteriorMedia[1].type === 'video'
-              ? <video src={exteriorMedia[1].thumb} muted autoplay loop playsinline />
-              : <img src={exteriorMedia[1].thumb} alt="Pileta" />}
-          </div>
-        ) : (
+      {exteriorMedia[1] ? (
+        <div class="lb-trigger" data-reveal data-group="exterior" data-src={exteriorMedia[1].full} data-type={exteriorMedia[1].type}>
+          {exteriorMedia[1].type === 'video'
+            ? <video src={exteriorMedia[1].thumb} muted autoplay loop playsinline />
+            : <img src={exteriorMedia[1].thumb} alt="Pileta" />}
+        </div>
+      ) : (
+        <div data-reveal>
           <div class="img-ph img-ph-dark" style="min-height:200px">
             <span>Pileta al atardecer</span>
           </div>
-        )}
-      </div>
-      <div data-reveal data-delay="1">
-        {exteriorMedia[2] ? (
-          <div class="lb-trigger" data-group="exterior" data-src={exteriorMedia[2].full} data-type={exteriorMedia[2].type}>
-            {exteriorMedia[2].type === 'video'
-              ? <video src={exteriorMedia[2].thumb} muted autoplay loop playsinline />
-              : <img src={exteriorMedia[2].thumb} alt="Parque" />}
-          </div>
-        ) : (
+        </div>
+      )}
+      {exteriorMedia[2] ? (
+        <div class="lb-trigger" data-reveal data-delay="1" data-group="exterior" data-src={exteriorMedia[2].full} data-type={exteriorMedia[2].type}>
+          {exteriorMedia[2].type === 'video'
+            ? <video src={exteriorMedia[2].thumb} muted autoplay loop playsinline />
+            : <img src={exteriorMedia[2].thumb} alt="Parque" />}
+        </div>
+      ) : (
+        <div data-reveal data-delay="1">
           <div class="img-ph img-ph-dark" style="min-height:200px">
             <span>Parque / árboles / jardín</span>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   </div>
 </section>
@@ -706,19 +706,19 @@ const ubicacionCercanos = p.ubicacionCercanos?.length ? p.ubicacionCercanos : []
     </div>
     <div class="gal-grid">
       {[...Array(7)].map((_, i) => (
-        <div class={`g${i + 1}`} data-reveal data-delay={String(i % 3)}>
-          {galeriaMedia[i] ? (
-            <div class="lb-trigger" data-group="galeria" data-src={galeriaMedia[i].full} data-type={galeriaMedia[i].type}>
-              {galeriaMedia[i].type === 'video'
-                ? <video src={galeriaMedia[i].thumb} muted autoplay loop playsinline />
-                : <img src={galeriaMedia[i].thumb} alt={`Galería ${i + 1}`} />}
-            </div>
-          ) : (
+        galeriaMedia[i] ? (
+          <div class={`g${i + 1} lb-trigger`} data-reveal data-delay={String(i % 3)} data-group="galeria" data-src={galeriaMedia[i].full} data-type={galeriaMedia[i].type}>
+            {galeriaMedia[i].type === 'video'
+              ? <video src={galeriaMedia[i].thumb} muted autoplay loop playsinline />
+              : <img src={galeriaMedia[i].thumb} alt={`Galería ${i + 1}`} />}
+          </div>
+        ) : (
+          <div class={`g${i + 1}`} data-reveal data-delay={String(i % 3)}>
             <div class="img-ph" style="min-height:120px">
               <span>Imagen {i + 1}</span>
             </div>
-          )}
-        </div>
+          </div>
+        )
       ))}
     </div>
   </div>

@@ -111,13 +111,15 @@ const exteriorStats   = p.exteriorStats?.length   ? p.exteriorStats   : [];
 const galeria         = p.galeria?.length          ? p.galeria          : [];
 
 function getMedia(arr: any[], thumbW = 900) {
-  if (!arr?.length) return [] as Array<{thumb:string;full:string;type:'image'|'video'}>;
+  if (!arr?.length) return [] as Array<{thumb:string;full:string;type:'image'|'video';objectPosition:string}>;
   return arr.map((item: any) => {
     if (!item) return null;
     const isVid = item._type === 'file';
     const url = isVid ? (item.asset?.url || '') : '';
-    return { thumb: isVid ? url : imgSrc(item, thumbW), full: isVid ? url : imgSrc(item, 1600), type: (isVid ? 'video' : 'image') as 'image'|'video' };
-  }).filter(Boolean) as Array<{thumb:string;full:string;type:'image'|'video'}>;
+    const hp = (!isVid && item.hotspot) ? item.hotspot : null;
+    const objectPosition = hp ? `${Math.round(hp.x * 100)}% ${Math.round(hp.y * 100)}%` : 'center center';
+    return { thumb: isVid ? url : imgSrc(item, thumbW), full: isVid ? url : imgSrc(item, 1600), type: (isVid ? 'video' : 'image') as 'image'|'video', objectPosition };
+  }).filter(Boolean) as Array<{thumb:string;full:string;type:'image'|'video';objectPosition:string}>;
 }
 
 const casaMedia     = getMedia(p.casaImagenes,     900);
@@ -187,8 +189,13 @@ const ubicacionCercanos = p.ubicacionCercanos?.length ? p.ubicacionCercanos : []
       radial-gradient(ellipse at 78% 18%, rgba(139,115,85,0.18) 0%, transparent 55%),
       radial-gradient(ellipse at 8% 92%, rgba(107,136,64,0.10) 0%, transparent 48%);
   }
-  .hero-photo { position: relative; min-height: 100svh; }
+  .hero-photo { position: relative; min-height: 100svh; border-radius: 0 0 0 12px; overflow: hidden; }
   .hero-photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  /* Gradient that bleeds from the text column into the photo — creates continuity */
+  .hero-photo::before {
+    content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+    background: linear-gradient(to right, var(--carbon) 0%, rgba(42,40,37,0.55) 18%, rgba(42,40,37,0.15) 38%, transparent 62%);
+  }
   .hero-ph {
     position: absolute; inset: 0;
     background: linear-gradient(160deg, var(--carbon) 0%, #3a3630 50%, var(--carbon-2) 100%);
@@ -308,6 +315,11 @@ const ubicacionCercanos = p.ubicacionCercanos?.length ? p.ubicacionCercanos : []
     .casa-feature .big { aspect-ratio: 16/10; }
   }
 
+  /* ─── Border-radius on all photo containers (12px = image-slot default) ─── */
+  .big, .casa-feature .col > div,
+  .ext-photo-tall, .ext-strip > div,
+  .gal-grid > div, .ubic-map { border-radius: 12px; }
+
   /* ═══════════ EL EXTERIOR ═══════════ */
   .exterior { background: var(--carbon-2); color: var(--crema); overflow: hidden; }
   .exterior .eyebrow { color: var(--piedra); }
@@ -332,7 +344,7 @@ const ubicacionCercanos = p.ubicacionCercanos?.length ? p.ubicacionCercanos : []
   .gal-grid {
     margin-top: clamp(2.5rem,5vh,3.5rem);
     display: grid; grid-template-columns: repeat(6, 1fr);
-    grid-auto-rows: clamp(120px, 16vh, 200px); gap: 1.1rem;
+    grid-auto-rows: clamp(160px, 22vh, 260px); gap: 1.1rem;
   }
   .gal-grid > div { overflow: hidden; }
   .g1 { grid-column: span 4; grid-row: span 2; }
@@ -592,7 +604,7 @@ const ubicacionCercanos = p.ubicacionCercanos?.length ? p.ubicacionCercanos : []
         <div class="big lb-trigger" data-reveal data-group="casa" data-src={casaMedia[0].full} data-type={casaMedia[0].type}>
           {casaMedia[0].type === 'video'
             ? <video src={casaMedia[0].thumb} muted autoplay loop playsinline />
-            : <img src={casaMedia[0].thumb} alt="Interior principal" />}
+            : <img src={casaMedia[0].thumb} alt="Interior principal" style={`object-position: ${casaMedia[0].objectPosition}`} />}
         </div>
       ) : (
         <div class="big" data-reveal>
@@ -606,7 +618,7 @@ const ubicacionCercanos = p.ubicacionCercanos?.length ? p.ubicacionCercanos : []
           <div class="lb-trigger" data-reveal data-delay="1" data-group="casa" data-src={casaMedia[1].full} data-type={casaMedia[1].type}>
             {casaMedia[1].type === 'video'
               ? <video src={casaMedia[1].thumb} muted autoplay loop playsinline />
-              : <img src={casaMedia[1].thumb} alt="Cocina" />}
+              : <img src={casaMedia[1].thumb} alt="Cocina" style={`object-position: ${casaMedia[1].objectPosition}`} />}
           </div>
         ) : (
           <div data-reveal data-delay="1">
@@ -619,7 +631,7 @@ const ubicacionCercanos = p.ubicacionCercanos?.length ? p.ubicacionCercanos : []
           <div class="lb-trigger" data-reveal data-delay="2" data-group="casa" data-src={casaMedia[2].full} data-type={casaMedia[2].type}>
             {casaMedia[2].type === 'video'
               ? <video src={casaMedia[2].thumb} muted autoplay loop playsinline />
-              : <img src={casaMedia[2].thumb} alt="Suite principal" />}
+              : <img src={casaMedia[2].thumb} alt="Suite principal" style={`object-position: ${casaMedia[2].objectPosition}`} />}
           </div>
         ) : (
           <div data-reveal data-delay="2">
@@ -658,7 +670,7 @@ const ubicacionCercanos = p.ubicacionCercanos?.length ? p.ubicacionCercanos : []
         <div class="ext-photo-tall lb-trigger" data-reveal data-group="exterior" data-src={exteriorMedia[0].full} data-type={exteriorMedia[0].type}>
           {exteriorMedia[0].type === 'video'
             ? <video src={exteriorMedia[0].thumb} muted autoplay loop playsinline />
-            : <img src={exteriorMedia[0].thumb} alt="Galería exterior" />}
+            : <img src={exteriorMedia[0].thumb} alt="Galería exterior" style={`object-position: ${exteriorMedia[0].objectPosition}`} />}
         </div>
       ) : (
         <div class="ext-photo-tall" data-reveal>
@@ -688,7 +700,7 @@ const ubicacionCercanos = p.ubicacionCercanos?.length ? p.ubicacionCercanos : []
         <div class="lb-trigger" data-reveal data-group="exterior" data-src={exteriorMedia[1].full} data-type={exteriorMedia[1].type}>
           {exteriorMedia[1].type === 'video'
             ? <video src={exteriorMedia[1].thumb} muted autoplay loop playsinline />
-            : <img src={exteriorMedia[1].thumb} alt="Pileta" />}
+            : <img src={exteriorMedia[1].thumb} alt="Pileta" style={`object-position: ${exteriorMedia[1].objectPosition}`} />}
         </div>
       ) : (
         <div data-reveal>
@@ -701,7 +713,7 @@ const ubicacionCercanos = p.ubicacionCercanos?.length ? p.ubicacionCercanos : []
         <div class="lb-trigger" data-reveal data-delay="1" data-group="exterior" data-src={exteriorMedia[2].full} data-type={exteriorMedia[2].type}>
           {exteriorMedia[2].type === 'video'
             ? <video src={exteriorMedia[2].thumb} muted autoplay loop playsinline />
-            : <img src={exteriorMedia[2].thumb} alt="Parque" />}
+            : <img src={exteriorMedia[2].thumb} alt="Parque" style={`object-position: ${exteriorMedia[2].objectPosition}`} />}
         </div>
       ) : (
         <div data-reveal data-delay="1">
@@ -727,7 +739,7 @@ const ubicacionCercanos = p.ubicacionCercanos?.length ? p.ubicacionCercanos : []
           <div class={`g${i + 1} lb-trigger`} data-reveal data-delay={String(i % 3)} data-group="galeria" data-src={galeriaMedia[i].full} data-type={galeriaMedia[i].type}>
             {galeriaMedia[i].type === 'video'
               ? <video src={galeriaMedia[i].thumb} muted autoplay loop playsinline />
-              : <img src={galeriaMedia[i].thumb} alt={`Galería ${i + 1}`} />}
+              : <img src={galeriaMedia[i].thumb} alt={`Galería ${i + 1}`} style={`object-position: ${galeriaMedia[i].objectPosition}`} />}
           </div>
         ) : (
           <div class={`g${i + 1}`} data-reveal data-delay={String(i % 3)}>

@@ -418,12 +418,18 @@ const ubicacionCercanos = p.ubicacionCercanos?.length ? p.ubicacionCercanos : []
   .ubicacion { background: var(--crema); }
   .ubic-grid { display: grid; grid-template-columns: 1fr 1.1fr; gap: clamp(2rem,5vw,4rem); align-items: center; }
   .ubic-map { position: relative; aspect-ratio: 4/3; overflow: hidden; }
-  .ubic-pin {
-    position: absolute; left: 50%; top: 46%; transform: translate(-50%,-50%);
-    z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 0.5rem; pointer-events: none;
+  #mapaUbicacion { position: absolute; inset: 0; z-index: 0; }
+  /* Warm-gray tint on map tiles — matches site palette */
+  #mapaUbicacion .leaflet-layer { filter: sepia(18%) saturate(75%) brightness(1.02); }
+  /* Hide Leaflet attribution (keep OSM/CARTO credit via CSS) */
+  #mapaUbicacion .leaflet-control-attribution { font-size: 9px; opacity: 0.45; }
+  /* Custom marker label */
+  .ubic-leaflet-lbl {
+    font-family: 'Jost', sans-serif; font-size: 10px; letter-spacing: 0.18em;
+    text-transform: uppercase; background: var(--carbon); color: var(--crema);
+    padding: 4px 10px; white-space: nowrap; margin-top: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
   }
-  .ubic-pin .dot { width: 14px; height: 14px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 6px rgba(139,115,85,0.22); }
-  .ubic-pin .lbl { font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; background: var(--carbon); color: var(--crema); padding: 4px 10px; }
   .ubic-near { margin-top: 2rem; display: flex; flex-direction: column; gap: 0; }
   .ubic-near .row { display: flex; justify-content: space-between; padding: 0.85rem 0; border-bottom: 1px solid rgba(42,40,37,0.12); }
   .ubic-near .row span:first-child { color: var(--carbon); font-size: 14px; }
@@ -830,17 +836,7 @@ const ubicacionCercanos = p.ubicacionCercanos?.length ? p.ubicacionCercanos : []
         )}
       </div>
       <div class="ubic-map" data-reveal data-delay="1">
-        {p.ubicacionImagen ? (
-          <img src={imgSrc(p.ubicacionImagen, 800)} alt="Mapa de ubicación" />
-        ) : (
-          <div class="img-ph" style="min-height:300px">
-            <span>Mapa / vista aérea del lote</span>
-          </div>
-        )}
-        <div class="ubic-pin">
-          <div class="dot"></div>
-          <div class="lbl">La propiedad</div>
-        </div>
+        <div id="mapaUbicacion"></div>
       </div>
     </div>
   </div>
@@ -1108,6 +1104,54 @@ const ubicacionCercanos = p.ubicacionCercanos?.length ? p.ubicacionCercanos : []
     if (e.key === 'ArrowLeft') showItem(currentIdx - 1);
     if (e.key === 'ArrowRight') showItem(currentIdx + 1);
   });
+})();
+
+// ── Mapa de ubicación (Leaflet + CartoDB Positron) ──
+(function () {
+  const mapEl = document.getElementById('mapaUbicacion');
+  if (!mapEl) return;
+
+  const LAT = -35.03675;
+  const LNG = -58.4353611;
+
+  function initLeaflet() {
+    const L = (window as any).L;
+    const map = L.map('mapaUbicacion', {
+      center: [LAT, LNG],
+      zoom: 15,
+      zoomControl: true,
+      scrollWheelZoom: false,
+      dragging: true,
+      attributionControl: true,
+    });
+
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> &copy; <a href="https://carto.com/" target="_blank">CARTO</a>',
+      subdomains: 'abcd',
+      maxZoom: 19,
+    }).addTo(map);
+
+    const icon = L.divIcon({
+      className: '',
+      html: '<div style="width:14px;height:14px;background:#8B7355;border-radius:50%;box-shadow:0 0 0 8px rgba(139,115,85,0.22);border:2px solid #fff;position:relative;z-index:1;"></div>' +
+            '<div class="ubic-leaflet-lbl">La propiedad</div>',
+      iconSize: [14, 14],
+      iconAnchor: [7, 7],
+      popupAnchor: [0, -20],
+    });
+    L.marker([LAT, LNG], { icon }).addTo(map);
+  }
+
+  // Load Leaflet CSS + JS dynamically
+  const css = document.createElement('link');
+  css.rel = 'stylesheet';
+  css.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+  document.head.appendChild(css);
+
+  const js = document.createElement('script');
+  js.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+  js.onload = initLeaflet;
+  document.head.appendChild(js);
 })();
 </script>
 

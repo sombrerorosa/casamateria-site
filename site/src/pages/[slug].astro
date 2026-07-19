@@ -644,12 +644,12 @@ const ubicacionCercanos = p.ubicacionCercanos?.length ? p.ubicacionCercanos : []
           </div>
         </div>
       )}
-      {([
+      {[
         { alt: 'Cocina / isla central', label: 'Cocina / isla central' },
         { alt: 'Suite principal', label: 'Suite principal / materiales' },
         { alt: 'Baño / terminaciones', label: 'Baño / terminaciones' },
         { alt: 'Detalle interior', label: 'Detalle interior' },
-      ] as Array<{alt:string;label:string}>).map((ph, i) => (
+      ].map((ph: any, i: number) => (
         casaMedia[i + 1] ? (
           <div class="casa-ph-sm lb-trigger" data-reveal data-delay={String(i + 1)} data-group="casa" data-src={casaMedia[i + 1].full} data-type={casaMedia[i + 1].type}>
             {casaMedia[i + 1].type === 'video'
@@ -758,7 +758,7 @@ const ubicacionCercanos = p.ubicacionCercanos?.length ? p.ubicacionCercanos : []
     </div>
     <!-- Top 3 editorial -->
     <div class="gal-top">
-      {([0, 1, 2] as number[]).map((i) => (
+      {[0, 1, 2].map((i: number) => (
         galeriaMedia[i] ? (
           <div class="lb-trigger" data-reveal data-delay={String(i)} data-group="galeria" data-src={galeriaMedia[i].full} data-type={galeriaMedia[i].type}>
             {galeriaMedia[i].type === 'video'

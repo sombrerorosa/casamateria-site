@@ -453,10 +453,11 @@ const ubicacionCercanos = p.ubicacionCercanos?.length ? p.ubicacionCercanos : []
   #mapaUbicacion .leaflet-control-attribution { font-size: 9px; opacity: 0.45; }
   /* Custom marker label */
   .ubic-leaflet-lbl {
-    font-family: 'Jost', sans-serif; font-size: 10px; letter-spacing: 0.18em;
+    font-family: 'Jost', sans-serif; font-size: 11px; letter-spacing: 0.14em;
     text-transform: uppercase; background: var(--carbon); color: var(--crema);
-    padding: 4px 10px; white-space: nowrap; margin-top: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    padding: 7px 16px; white-space: nowrap;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.38);
+    border-radius: 2px; pointer-events: none;
   }
   .ubic-near { margin-top: 2rem; display: flex; flex-direction: column; gap: 0; }
   .ubic-near .row { display: flex; justify-content: space-between; padding: 0.85rem 0; border-bottom: 1px solid rgba(42,40,37,0.12); }
@@ -1206,11 +1207,17 @@ const ubicacionCercanos = p.ubicacionCercanos?.length ? p.ubicacionCercanos : []
 
     const icon = L.divIcon({
       className: '',
-      html: '<div style="width:14px;height:14px;background:#8B7355;border-radius:50%;box-shadow:0 0 0 8px rgba(139,115,85,0.22);border:2px solid #fff;position:relative;z-index:1;"></div>' +
-            '<div class="ubic-leaflet-lbl">La propiedad</div>',
-      iconSize: [14, 14],
-      iconAnchor: [7, 7],
-      popupAnchor: [0, -20],
+      html: '<div style="position:relative;width:0;height:0;">' +
+              '<div style="position:absolute;width:14px;height:14px;background:#8B7355;border-radius:50%;' +
+                'box-shadow:0 0 0 8px rgba(139,115,85,0.22);border:2px solid #fff;' +
+                'transform:translate(-50%,-50%);z-index:2;"></div>' +
+              '<div class="ubic-leaflet-lbl" style="position:absolute;bottom:22px;left:0;transform:translateX(-50%);">' +
+                'La propiedad' +
+              '</div>' +
+            '</div>',
+      iconSize: [0, 0],
+      iconAnchor: [0, 0],
+      popupAnchor: [0, -30],
     });
     L.marker([LAT, LNG], { icon }).addTo(map);
   }

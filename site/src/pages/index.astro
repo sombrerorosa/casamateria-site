@@ -22,7 +22,9 @@ let proyectos: any[] = [];
 try {
   const slugs = await getAllProyectoSlugs();
   if (slugs?.length) {
-    const fetchedAll = await Promise.all(slugs.map(({ slug }) => getProyectoBySlug(slug)));
+    const fetchedAll = await Promise.all(
+      slugs.map(({ slug }) => getProyectoBySlug(slug).then(p => p ? { ...p, slug: { current: slug } } : null))
+    );
     proyectos = fetchedAll.filter(Boolean);
   }
 } catch {}

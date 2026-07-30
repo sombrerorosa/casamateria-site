@@ -29,6 +29,7 @@ export async function getProyectoBySlug(slug: string) {
     galeria[]{ ..., asset-> },
     perfiles,
     ficha,
+    barrioImagenes[]{ ..., asset-> },
     ubicacionTitulo, ubicacionTexto, ubicacionCercanos,
     ubicacionImagen{ ..., asset-> },
     seoDescripcion

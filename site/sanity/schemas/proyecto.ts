@@ -200,6 +200,13 @@ export default {
         preview: { select: { title: 'clave', subtitle: 'valor' } },
       }],
     },
+    // ── Barrio ──
+    {
+      name: 'barrioImagenes',
+      title: 'El barrio — fotos del barrio / sporting club (hasta 4)',
+      type: 'array',
+      of: [{ type: 'image', options: { hotspot: true } }],
+    },
     // ── Ubicación ──
     {
       name: 'ubicacionTitulo',

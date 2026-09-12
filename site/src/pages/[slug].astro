@@ -587,6 +587,20 @@ const ubicacionCercanos = p.ubicacionCercanos?.length ? p.ubicacionCercanos : []
   @media (max-width: 820px) { .visita .wrap { grid-template-columns: 1fr; } }
   @media (max-width: 480px) { .field-row { grid-template-columns: 1fr; } }
 
+  /* ═══════════ SEC CTA (link a #visita) ═══════════ */
+  .sec-cta {
+    display: inline-flex; align-items: center; gap: 0.6em; margin-top: clamp(2.2rem,4vw,3rem);
+    font-family: 'Jost', sans-serif; font-weight: 500; font-size: 11.5px;
+    letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent-text);
+    text-decoration: none; padding-bottom: 0.35em; border-bottom: 1px solid rgba(139,115,85,0.35);
+    transition: border-color 240ms var(--ease), color 240ms var(--ease);
+  }
+  .sec-cta .arrow { display: inline-block; transition: transform 240ms var(--ease); }
+  .sec-cta:hover { color: var(--carbon); border-color: var(--carbon); }
+  .sec-cta:hover .arrow { transform: translateX(3px); }
+  .sec-cta.on-dark { color: var(--piedra); border-bottom-color: rgba(200,187,168,0.3); }
+  .sec-cta.on-dark:hover { color: var(--crema); border-color: var(--piedra); }
+
   /* ═══════════ FOOTER ═══════════ */
   .foot { background: var(--carbon-2); color: rgba(200,187,168,0.6); padding: clamp(3rem,6vh,4.5rem) 0 2rem; }
   .foot .wrap { display: flex; flex-direction: column; gap: 2.5rem; }
@@ -657,7 +671,6 @@ const ubicacionCercanos = p.ubicacionCercanos?.length ? p.ubicacionCercanos : []
   <div class="hero-copy">
     <div class="hero-eyebrow">
       <span class="eyebrow">{p.ubicacion || ''}</span>
-      {precio && <span style="font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(200,187,168,0.65)">· {precio}</span>}
     </div>
     <h1>
       {tituloLinea1}<br>
@@ -676,6 +689,61 @@ const ubicacionCercanos = p.ubicacionCercanos?.length ? p.ubicacionCercanos : []
   </div>
 </header>
 
+<!-- VISITA PRIVADA -->
+<section class="s visita" id="visita">
+  <div class="wrap">
+    <div data-reveal>
+      <span class="eyebrow">Visita privada · por invitación</span>
+      <h2>El mercado la verá<br>después. <em>Vos, primero.</em></h2>
+      <p class="blurb">No coordinamos citas — coordinamos experiencias. Dejanos tus datos y un asesor de Casa Materia se contacta para agendar una visita privada, sin apuro y sin otros compradores en la casa.</p>
+      {precio && (
+        <div class="price-spot">
+          <div class="k">Valor de publicación</div>
+          <div class="v">{precio}</div>
+        </div>
+      )}
+    </div>
+    <div data-reveal data-delay="1">
+      <form class="form" id="visitaForm" novalidate data-form-id={cmFormId} data-project={titulo}>
+        <div class="field-row">
+          <div class="field">
+            <label for="nombre">Nombre *</label>
+            <input type="text" id="nombre" name="nombre" placeholder="Tu nombre" required />
+          </div>
+          <div class="field">
+            <label for="tel">Teléfono *</label>
+            <input type="tel" id="tel" name="tel" placeholder="+54 9 11 ..." required />
+          </div>
+        </div>
+        <div class="field">
+          <label for="email">Email *</label>
+          <input type="email" id="email" name="email" placeholder="tu@email.com" required />
+        </div>
+        <div class="field">
+          <label for="momento">¿Cuándo te gustaría visitarla?</label>
+          <select id="momento" name="momento">
+            <option>Esta semana</option>
+            <option>El fin de semana</option>
+            <option>Las próximas dos semanas</option>
+            <option>Todavía estoy explorando</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="msg">Mensaje (opcional)</label>
+          <textarea id="msg" name="msg" rows="3" placeholder="Contanos qué buscás en una casa."></textarea>
+        </div>
+        <button type="submit" class="submit" id="visitaSubmit">
+          Solicitar visita privada →
+        </button>
+      </form>
+      <div class="form-success" id="visitaSuccess">
+        <div class="check">Gracias — recibimos tu solicitud.</div>
+        <p>Un asesor de Casa Materia se va a contactar dentro de las próximas 24 horas para coordinar tu visita privada.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- CONCEPTO -->
 <section class="s manifesto" id="concepto">
   <div class="wrap">
@@ -686,6 +754,7 @@ const ubicacionCercanos = p.ubicacionCercanos?.length ? p.ubicacionCercanos : []
     <div>
       <p class="manifesto-text" data-reveal data-delay="1">{p.conceptoTexto || ''}</p>
       <p class="manifesto-sign" data-reveal data-delay="2">Casa Materia presenta — {titulo}.</p>
+      <a href="#visita" class="sec-cta on-dark" data-reveal data-delay="2">Agendar visita privada <span class="arrow">→</span></a>
     </div>
   </div>
 </section>
@@ -751,6 +820,7 @@ const ubicacionCercanos = p.ubicacionCercanos?.length ? p.ubicacionCercanos : []
         ))}
       </div>
     )}
+    <a href="#visita" class="sec-cta" data-reveal>Agendar visita privada <span class="arrow">→</span></a>
   </div>
 </section>
 
@@ -820,6 +890,7 @@ const ubicacionCercanos = p.ubicacionCercanos?.length ? p.ubicacionCercanos : []
         </div>
       )}
     </div>
+    <a href="#visita" class="sec-cta on-dark" data-reveal>Agendar visita privada <span class="arrow">→</span></a>
   </div>
 </section>
 
@@ -864,6 +935,7 @@ const ubicacionCercanos = p.ubicacionCercanos?.length ? p.ubicacionCercanos : []
         <button class="gal-carr-btn gal-carr-next" aria-label="Siguiente">&#8250;</button>
       </div>
     )}
+    <a href="#visita" class="sec-cta" data-reveal>Agendar visita privada <span class="arrow">→</span></a>
   </div>
 </section>
 
@@ -886,6 +958,7 @@ const ubicacionCercanos = p.ubicacionCercanos?.length ? p.ubicacionCercanos : []
         ))}
       </div>
     )}
+    <a href="#visita" class="sec-cta on-dark" data-reveal>Agendar visita privada <span class="arrow">→</span></a>
   </div>
 </section>
 
@@ -915,6 +988,7 @@ const ubicacionCercanos = p.ubicacionCercanos?.length ? p.ubicacionCercanos : []
         </div>
       </div>
     )}
+    <a href="#visita" class="sec-cta" data-reveal>Agendar visita privada <span class="arrow">→</span></a>
   </div>
 </section>
 
@@ -989,61 +1063,7 @@ const ubicacionCercanos = p.ubicacionCercanos?.length ? p.ubicacionCercanos : []
       </div>
     </div>
 
-  </div>
-</section>
-
-<!-- VISITA PRIVADA -->
-<section class="s visita" id="visita">
-  <div class="wrap">
-    <div data-reveal>
-      <span class="eyebrow">Visita privada · por invitación</span>
-      <h2>El mercado la verá<br>después. <em>Vos, primero.</em></h2>
-      <p class="blurb">No coordinamos citas — coordinamos experiencias. Dejanos tus datos y un asesor de Casa Materia se contacta para agendar una visita privada, sin apuro y sin otros compradores en la casa.</p>
-      {precio && (
-        <div class="price-spot">
-          <div class="k">Valor de publicación</div>
-          <div class="v">{precio}</div>
-        </div>
-      )}
-    </div>
-    <div data-reveal data-delay="1">
-      <form class="form" id="visitaForm" novalidate data-form-id={cmFormId} data-project={titulo}>
-        <div class="field-row">
-          <div class="field">
-            <label for="nombre">Nombre *</label>
-            <input type="text" id="nombre" name="nombre" placeholder="Tu nombre" required />
-          </div>
-          <div class="field">
-            <label for="tel">Teléfono *</label>
-            <input type="tel" id="tel" name="tel" placeholder="+54 9 11 ..." required />
-          </div>
-        </div>
-        <div class="field">
-          <label for="email">Email *</label>
-          <input type="email" id="email" name="email" placeholder="tu@email.com" required />
-        </div>
-        <div class="field">
-          <label for="momento">¿Cuándo te gustaría visitarla?</label>
-          <select id="momento" name="momento">
-            <option>Esta semana</option>
-            <option>El fin de semana</option>
-            <option>Las próximas dos semanas</option>
-            <option>Todavía estoy explorando</option>
-          </select>
-        </div>
-        <div class="field">
-          <label for="msg">Mensaje (opcional)</label>
-          <textarea id="msg" name="msg" rows="3" placeholder="Contanos qué buscás en una casa."></textarea>
-        </div>
-        <button type="submit" class="submit" id="visitaSubmit">
-          Solicitar visita privada →
-        </button>
-      </form>
-      <div class="form-success" id="visitaSuccess">
-        <div class="check">Gracias — recibimos tu solicitud.</div>
-        <p>Un asesor de Casa Materia se va a contactar dentro de las próximas 24 horas para coordinar tu visita privada.</p>
-      </div>
-    </div>
+    <a href="#visita" class="sec-cta" data-reveal>Agendar visita privada <span class="arrow">→</span></a>
   </div>
 </section>
 

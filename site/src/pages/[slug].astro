@@ -515,7 +515,7 @@ const ubicacionCercanos = p.ubicacionCercanos?.length ? p.ubicacionCercanos : []
   #mapaUbicacion { position: absolute; inset: 0; z-index: 0; }
   /* Warm-gray tint on map tiles — matches site palette */
   #mapaUbicacion .leaflet-layer { filter: sepia(18%) saturate(75%) brightness(1.02); }
-  /* Hide Leaflet attribution (keep OSM/CARTO credit via CSS) */
+  /* Hide Leaflet attribution (keep Esri credit via CSS) */
   #mapaUbicacion .leaflet-control-attribution { font-size: 9px; opacity: 0.45; }
   /* Custom marker label */
   .ubic-leaflet-lbl {
@@ -1100,7 +1100,7 @@ const ubicacionCercanos = p.ubicacionCercanos?.length ? p.ubicacionCercanos : []
     </div>
     <div class="foot-bottom">
       <span>{titulo} · {p.ubicacion || ''} {precio ? `· ${precio}` : ''}</span>
-      <span>© 2026 Casa Materia · <a href="https://sombrerorosa.com" target="_blank" rel="noopener">Sombrero Rosa</a></span>
+      <span>© 2026 Casa Materia · Real Estate Boutique</span>
     </div>
   </div>
 </footer>
@@ -1333,7 +1333,7 @@ const ubicacionCercanos = p.ubicacionCercanos?.length ? p.ubicacionCercanos : []
   document.querySelector('.ubic-carr-next')?.addEventListener('click', () => track.scrollBy({ left: slideW(), behavior: 'smooth' }));
 })();
 
-// ── Mapa de ubicación (Leaflet + CartoDB Positron) ──
+// ── Mapa de ubicación (Leaflet + Esri Light Gray Canvas) ──
 (function () {
   const mapEl = document.getElementById('mapaUbicacion');
   if (!mapEl) return;
@@ -1352,10 +1352,9 @@ const ubicacionCercanos = p.ubicacionCercanos?.length ? p.ubicacionCercanos : []
       attributionControl: true,
     });
 
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> &copy; <a href="https://carto.com/" target="_blank">CARTO</a>',
-      subdomains: 'abcd',
-      maxZoom: 19,
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
+      attribution: '&copy; <a href="https://www.esri.com/" target="_blank">Esri</a>',
+      maxZoom: 16,
     }).addTo(map);
 
     const icon = L.divIcon({

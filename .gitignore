@@ -4,4 +4,3 @@ studio-dist/
 .env
 .DS_Store
 .astro/
-package-lock.json

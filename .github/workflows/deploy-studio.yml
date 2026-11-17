@@ -9,6 +9,10 @@ on:
       - 'site/sanity.cli.ts'
   workflow_dispatch:
 
+# El job solo necesita leer el repo; el token de Sanity llega por secreto.
+permissions:
+  contents: read
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -22,7 +26,7 @@ jobs:
         with:
           node-version: 20
 
-      - run: npm install
+      - run: npm ci
 
       - run: npx sanity deploy --yes
         env:

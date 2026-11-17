@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { inlineHtml } from '../lib/inlineHtml';
 import { getAllProyectoSlugs, getProyectoBySlug } from '../lib/sanity';
 import { urlFor } from '../lib/imageUrl';
 
@@ -847,8 +848,8 @@ const ubicacionCercanos = p.ubicacionCercanos?.length ? p.ubicacionCercanos : []
         </div>
       )}
       <div class="ext-body" data-reveal data-delay="1">
-        {p.exteriorTexto1 && <p class="body" set:html={p.exteriorTexto1}></p>}
-        {p.exteriorTexto2 && <p class="body" set:html={p.exteriorTexto2}></p>}
+        {p.exteriorTexto1 && <p class="body" set:html={inlineHtml(p.exteriorTexto1)}></p>}
+        {p.exteriorTexto2 && <p class="body" set:html={inlineHtml(p.exteriorTexto2)}></p>}
         {exteriorStats.length > 0 && (
           <div class="ext-stats">
             {exteriorStats.map((s: any) => (
@@ -1001,7 +1002,7 @@ const ubicacionCercanos = p.ubicacionCercanos?.length ? p.ubicacionCercanos : []
       <div class="ubic-intro" data-reveal>
         <div class="sec-head" style="margin-bottom:0">
           {p.barrioEyebrow && <span class="eyebrow" style="display:block;margin-bottom:1.2rem">{p.barrioEyebrow}</span>}
-          <h2 class="sec-title"><Fragment set:html={p.barrioTitulo} /></h2>
+          <h2 class="sec-title"><Fragment set:html={inlineHtml(p.barrioTitulo)} /></h2>
         </div>
         {p.barrioTexto?.length > 0 && (
           <div class="ubic-body-cols">
